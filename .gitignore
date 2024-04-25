@@ -2,6 +2,7 @@
 application.properties
 application.yml
 
+MEMO.txt
 HELP.md
 .gradle
 build/
