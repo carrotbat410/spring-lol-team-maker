@@ -1,3 +1,7 @@
+### Application properties ###
+application.properties
+application.yml
+
 HELP.md
 .gradle
 build/
@@ -27,11 +31,3 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-#src/main/resources/application.yml
-
-#/src/main/resources/application.properties
-
-### Application properties ###
-application.properties
-application.yml
