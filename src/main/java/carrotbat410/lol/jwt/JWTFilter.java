@@ -30,7 +30,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
 
-        System.out.println("doFilterInternal실행됨");
         //이 필터는 모든 요청에 적용됨. 그래서 아래 헤더 검증 코드는 로그인 안했으면 검증할 필요없으니 이 필터는 끝내는거
         //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
