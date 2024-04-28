@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+//! JPA 기본생성자 필요(public or protected)
+//TODO 모든 엔티티 생성자 주입으로 Setter줄이자.
 @Entity
 @Getter
-@Setter //TODO Setter들 나중에 다 찾아서 최대한 안쓰도록 바꾸기
+@Setter
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
