@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-//TODO 모든 엔티티를 생성자를 통해서 Setter줄이자.
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
