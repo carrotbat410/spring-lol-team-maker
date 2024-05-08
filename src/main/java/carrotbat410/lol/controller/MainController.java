@@ -1,6 +1,6 @@
 package carrotbat410.lol.controller;
 
-import carrotbat410.lol.exhandler.exception.UserException;
+import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +27,7 @@ public class MainController {
             throw new IllegalArgumentException("잘못된 입력 값");
         }
         if(id.equals("user")) {
-            throw new UserException("잘못된 유저");
+            throw new AlreadyExistException("이미 존재하는 유저입니다.");
         }
 
         //INFO SecurityContextHolder에서 잠시 생긴 세션정보 가져올 수 있다.

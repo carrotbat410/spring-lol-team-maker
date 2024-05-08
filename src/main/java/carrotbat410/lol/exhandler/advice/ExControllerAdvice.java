@@ -1,7 +1,7 @@
 package carrotbat410.lol.exhandler.advice;
 
 import carrotbat410.lol.dto.ErrorResult;
-import carrotbat410.lol.exhandler.exception.UserException;
+import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -30,12 +30,6 @@ public class ExControllerAdvice {
         return new ErrorResult("BAD", e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ErrorResult userExHandle(UserException e) {
-        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult(e.getCode(), e.getMessage());
-    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
@@ -51,6 +45,12 @@ public class ExControllerAdvice {
 //        log.info("code: " + code);
 
         return new ErrorResult(code, message, fieldName);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler
+    public ErrorResult conflictDataHandle(AlreadyExistException e) {
+        return new ErrorResult(e.getCode(), e.getMessage());
     }
 
 
