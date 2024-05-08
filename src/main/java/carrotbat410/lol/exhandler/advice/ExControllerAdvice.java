@@ -34,7 +34,7 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult userExHandle(UserException e) {
         log.error("[exceptionHandle] ex", e);
-        return new ErrorResult("USER-EX", e.getMessage());
+        return new ErrorResult(e.getCode(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
