@@ -39,7 +39,7 @@ public class ExControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult userExHandle2(MethodArgumentNotValidException e) {
+    public ErrorResult beanValidationHandle(MethodArgumentNotValidException e) {
         log.error("[exceptionHandle] ex", e);
 
         FieldError error = ((FieldError) e.getBindingResult().getAllErrors().get(0));
