@@ -1,6 +1,7 @@
 package carrotbat410.lol.exhandler.advice;
 
 import carrotbat410.lol.dto.ErrorResult;
+import carrotbat410.lol.dto.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,10 @@ public class ExControllerAdvice {
     }
 
 
+    //! 리턴타입 FieldErrorResult
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public ErrorResult beanValidationHandle(MethodArgumentNotValidException e) {
+    public FieldErrorResult beanValidationHandle(MethodArgumentNotValidException e) {
         log.error("[exceptionHandle] ex", e);
 
         FieldError error = ((FieldError) e.getBindingResult().getAllErrors().get(0));
@@ -44,7 +46,7 @@ public class ExControllerAdvice {
 //        log.info("message: " + message);
 //        log.info("code: " + code);
 
-        return new ErrorResult(code, message, fieldName);
+        return new FieldErrorResult(code, message, fieldName);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
