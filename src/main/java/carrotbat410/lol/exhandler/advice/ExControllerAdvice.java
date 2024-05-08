@@ -46,9 +46,9 @@ public class ExControllerAdvice {
         String fieldName = error.getField();
         String message = error.getDefaultMessage();
         String code = error.getCode();
-        log.info("fieldName: " + fieldName);
-        log.info("message: " + message);
-        log.info("code: " + code);
+//        log.info("fieldName: " + fieldName);
+//        log.info("message: " + message);
+//        log.info("code: " + code);
 
         return new ErrorResult(code, message, fieldName);
     }
