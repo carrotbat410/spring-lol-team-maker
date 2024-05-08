@@ -1,19 +1,15 @@
 package carrotbat410.lol.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class UserEntity {
+@Table(name = "users")
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; //TODO int Inteager중 어떤게 나은지 찾아보기?(범위, null등... 찾아보기)
