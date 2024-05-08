@@ -1,14 +1,19 @@
 package carrotbat410.lol.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
-//@Data
 @Getter
-@AllArgsConstructor
 public class ErrorResult {
-    private String code;
-    private String message;
+    private final String code;
+    private final String message;
+    private final String fieldName;
+
+    public ErrorResult(String code, String message) {
+        this(code, message, null);
+    }
+    public ErrorResult(String code, String message, String fieldName) {
+        this.code = code;
+        this.message = message;
+        this.fieldName = fieldName;
+    }
 }

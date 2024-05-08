@@ -4,6 +4,7 @@ import carrotbat410.lol.dto.ErrorResult;
 import carrotbat410.lol.exhandler.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -40,8 +41,16 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult userExHandle2(MethodArgumentNotValidException e) {
         log.error("[exceptionHandle] ex", e);
-        String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
-        return new ErrorResult("JOIN", defaultMessage);
+
+        FieldError error = ((FieldError) e.getBindingResult().getAllErrors().get(0));
+        String fieldName = error.getField();
+        String message = error.getDefaultMessage();
+        String code = error.getCode();
+        log.info("fieldName: " + fieldName);
+        log.info("message: " + message);
+        log.info("code: " + code);
+
+        return new ErrorResult(code, message, fieldName);
     }
 
 
