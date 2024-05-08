@@ -4,6 +4,7 @@ import carrotbat410.lol.dto.ErrorResult;
 import carrotbat410.lol.exhandler.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,17 +23,25 @@ public class ExControllerAdvice {
 
     //방법2
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler
     public ErrorResult illegalExHandle(IllegalArgumentException e) {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResult("BAD", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserException.class)
+    @ExceptionHandler
     public ErrorResult userExHandle(UserException e) {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResult("USER-EX", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult userExHandle2(MethodArgumentNotValidException e) {
+        log.error("[exceptionHandle] ex", e);
+        String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
+        return new ErrorResult("JOIN", defaultMessage);
     }
 
 
