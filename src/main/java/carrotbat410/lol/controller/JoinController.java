@@ -23,6 +23,6 @@ public class JoinController {
 
         joinService.joinProcess(joinDTO);
 
-        return "ok";
+        return "ok"; //TODO 응답 형태 공통화하기
     }
 }
