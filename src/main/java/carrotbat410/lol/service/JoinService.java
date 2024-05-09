@@ -24,14 +24,16 @@ public class JoinService {
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
 
-        Boolean isExist = userRepository.existsByUsername(username);
-
-        if (isExist) {
-            throw new AlreadyExistException("이미 존재하는 유저입니다.");
-        }
+        validateDuplicatedUser(username);
 
         UserEntity userEntity = new UserEntity(username, bCryptPasswordEncoder.encode(password), "ROLE_ADMIN"); //TODO ENUM으로 바꾸기, ROLE_USER경우 추가하기
 
         userRepository.save(userEntity);
     }
+
+    private void validateDuplicatedUser(String username) {
+        Boolean isExist = userRepository.existsByUsername(username);
+        if (isExist) throw new AlreadyExistException("이미 존재하는 유저입니다.");
+    }
+
 }
