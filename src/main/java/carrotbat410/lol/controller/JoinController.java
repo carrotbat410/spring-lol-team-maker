@@ -1,6 +1,7 @@
 package carrotbat410.lol.controller;
 
 import carrotbat410.lol.dto.JoinDTO;
+import carrotbat410.lol.dto.SuccessResult;
 import carrotbat410.lol.service.JoinService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +20,10 @@ public class JoinController {
     }
 
     @PostMapping("/join")
-    public String joinProcess(@RequestBody @Validated JoinDTO joinDTO) {
+    public SuccessResult joinProcess(@RequestBody @Validated JoinDTO joinDTO) {
 
         joinService.joinProcess(joinDTO);
 
-        return "ok"; //TODO 응답 형태 공통화하기
+        return new SuccessResult("ok");
     }
 }
