@@ -1,12 +1,12 @@
 package carrotbat410.lol.repository;
 
-import carrotbat410.lol.entity.UserEntity;
+import carrotbat410.lol.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     Boolean existsByUsername(String username);
 
     //TODO Entity반환X
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 }

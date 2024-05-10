@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Table(name = "users")
-public class UserEntity extends BaseEntity {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -18,7 +18,7 @@ public class UserEntity extends BaseEntity {
     private String password;
     private String role;
 
-    public UserEntity(String username, String password, String role) {
+    public User(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;
