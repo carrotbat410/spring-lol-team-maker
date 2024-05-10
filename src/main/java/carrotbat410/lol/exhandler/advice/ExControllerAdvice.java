@@ -5,6 +5,7 @@ import carrotbat410.lol.dto.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +30,12 @@ public class ExControllerAdvice {
     public ErrorResult illegalExHandle(IllegalArgumentException e) {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResult("BAD", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult noBodyExHandle(HttpMessageNotReadableException e) {
+        return new ErrorResult("BAD", "body값을 입력해주세요.");
     }
 
 
