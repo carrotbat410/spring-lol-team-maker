@@ -2,7 +2,7 @@ package carrotbat410.lol.controller;
 
 import carrotbat410.lol.dto.JoinDTO;
 import carrotbat410.lol.dto.SuccessResult;
-import carrotbat410.lol.service.JoinService;
+import carrotbat410.lol.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,18 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-public class JoinController {
+public class UserController {
 
-    private final JoinService joinService;
+    private final UserService userService;
 
-    public JoinController(JoinService joinService) {
-        this.joinService = joinService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/join")
     public SuccessResult joinProcess(@RequestBody @Validated JoinDTO joinDTO) {
-
-        joinService.joinProcess(joinDTO);
+        userService.joinProcess(joinDTO);
 
         return new SuccessResult("ok");
     }
