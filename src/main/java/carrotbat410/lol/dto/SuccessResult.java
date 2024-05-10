@@ -7,6 +7,10 @@ public class SuccessResult <T> {
     private final String message;
     private final T data;
 
+    public SuccessResult() {
+        this("ok", null);
+    }
+
     public SuccessResult(String message) {
         this(message, null);
     }
