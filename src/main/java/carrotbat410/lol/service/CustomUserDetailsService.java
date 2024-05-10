@@ -1,6 +1,7 @@
 package carrotbat410.lol.service;
 
 import carrotbat410.lol.dto.CustomUserDetails;
+import carrotbat410.lol.dto.UserTokenDTO;
 import carrotbat410.lol.entity.User;
 import carrotbat410.lol.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userData = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
 
-        if(userData != null) {
-            return new CustomUserDetails(userData);
-        }
-        return null;
+        if(user == null) return null;
+
+        UserTokenDTO userTokenDTO = UserTokenDTO.of(user.getId(), user.getUsername(), user.getPassword(), user.getRole());
+        return new CustomUserDetails(userTokenDTO);
     }
+
 }

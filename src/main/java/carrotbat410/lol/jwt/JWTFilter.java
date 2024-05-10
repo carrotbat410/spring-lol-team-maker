@@ -1,7 +1,7 @@
 package carrotbat410.lol.jwt;
 
 import carrotbat410.lol.dto.CustomUserDetails;
-import carrotbat410.lol.entity.User;
+import carrotbat410.lol.dto.UserTokenDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,13 +55,13 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
+        Integer id = jwtUtil.getId(token);
 
-        User user = new User(username, "temppassword", role);
+        UserTokenDTO userTokenDTO = UserTokenDTO.of(id, username, "tmppassword", role);
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        CustomUserDetails customUserDetails = new CustomUserDetails(userTokenDTO);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 

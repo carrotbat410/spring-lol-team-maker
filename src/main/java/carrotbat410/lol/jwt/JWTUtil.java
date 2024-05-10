@@ -30,7 +30,7 @@ public class JWTUtil {
     }
 
     public Integer getId(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Integer.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", Integer.class);
     }
 
     public Boolean isExpired(String token) {

@@ -1,6 +1,5 @@
 package carrotbat410.lol.dto;
 
-import carrotbat410.lol.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,10 +8,10 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final UserTokenDTO userTokenDTO;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    public CustomUserDetails(UserTokenDTO userTokenDTO) {
+        this.userTokenDTO = userTokenDTO;
     }
 
     @Override
@@ -22,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return user.getRole();
+                return userTokenDTO.getRole();
             }
         });
 
@@ -31,16 +30,16 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userTokenDTO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userTokenDTO.getUsername();
     }
 
     public Integer getId() {
-        return user.getId();
+        return userTokenDTO.getId();
     }
 
     @Override
