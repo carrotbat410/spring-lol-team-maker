@@ -24,14 +24,14 @@ public class SummonerController {
     public SuccessResult<List<Summoner>> getSummoners() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = extractUserIdFromAuthentication(authentication);
+        Long userId = extractUserIdFromAuthentication(authentication);
         List<Summoner> summoners = summonerService.getSummoners(userId);
 
         return new SuccessResult<>("ok", summoners);
     }
 
 
-    private int extractUserIdFromAuthentication(Authentication authentication) {
+    private Long extractUserIdFromAuthentication(Authentication authentication) {
         // Authentication 객체에서 사용자 ID를 추출하는 로직
         // CustomUserDetails를 사용하여 사용자 ID를 추출할 수 있음.
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

@@ -13,10 +13,10 @@ public class Summoner extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "summoner_id")
-    private Integer id;
+    private Long id;
     private String summonerName;
     private String tagLine;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 }

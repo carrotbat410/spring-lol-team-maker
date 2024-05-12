@@ -38,7 +38,7 @@ public class CustomUserDetails implements UserDetails {
         return userTokenDTO.getUsername();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return userTokenDTO.getId();
     }
 

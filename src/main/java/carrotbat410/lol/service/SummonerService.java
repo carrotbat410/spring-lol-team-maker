@@ -12,7 +12,7 @@ import java.util.List;
 public class SummonerService {
     private final SummonerRepository summonerRepository;
 
-    public List<Summoner> getSummoners(Integer userId) {
+    public List<Summoner> getSummoners(Long userId) {
         return summonerRepository.findByUserId(userId);
     }
 }

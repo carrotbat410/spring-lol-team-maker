@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class UserTokenDTO {
-    private final Integer id;
+    private final Long id;
     private final String username;
     private final String password;
     private final String role;
 
-    public static UserTokenDTO of(Integer id, String username, String password, String role) {
+    public static UserTokenDTO of(Long id, String username, String password, String role) {
         return new UserTokenDTO(id, username, password, role);
     }
 }

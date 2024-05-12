@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface SummonerRepository extends JpaRepository<Summoner, Integer> {
+public interface SummonerRepository extends JpaRepository<Summoner, Long> {
 
-    List<Summoner> findByUserId(int userId);
+    List<Summoner> findByUserId(Long userId);
 
 }
