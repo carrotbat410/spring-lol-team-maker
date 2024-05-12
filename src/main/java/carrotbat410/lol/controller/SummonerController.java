@@ -2,6 +2,7 @@ package carrotbat410.lol.controller;
 
 import carrotbat410.lol.dto.CustomUserDetails;
 import carrotbat410.lol.dto.SuccessResult;
+import carrotbat410.lol.dto.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.service.SummonerService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,13 @@ public class SummonerController {
     private final SummonerService summonerService;
 
     @GetMapping("/summoners")
-    public SuccessResult<List<Summoner>> getSummoners() {
+    public SuccessResult<List<SummonerDTO>> getSummoners() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = extractUserIdFromAuthentication(authentication);
-        List<Summoner> summoners = summonerService.getSummoners(userId);
+        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
 
-        return new SuccessResult<>("ok", summoners);
+        return new SuccessResult<>("ok", summonerDTOs);
     }
 
 

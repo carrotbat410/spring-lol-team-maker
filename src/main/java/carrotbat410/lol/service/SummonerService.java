@@ -1,10 +1,12 @@
 package carrotbat410.lol.service;
 
+import carrotbat410.lol.dto.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.repository.SummonerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -12,7 +14,12 @@ import java.util.List;
 public class SummonerService {
     private final SummonerRepository summonerRepository;
 
-    public List<Summoner> getSummoners(Long userId) {
-        return summonerRepository.findByUserId(userId);
+    public List<SummonerDTO> getSummoners(Long userId) {
+        List<Summoner> summoners = summonerRepository.findByUserId(userId);
+        ArrayList<SummonerDTO> summonerDTOs = new ArrayList<>();
+        for (Summoner summoner: summoners) {
+            summonerDTOs.add(SummonerDTO.from(summoner));
+        }
+        return summonerDTOs;
     }
 }
