@@ -28,7 +28,7 @@ public class SummonerController {
         Long userId = extractUserIdFromAuthentication(authentication);
         List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
 
-        return new SuccessResult<>("ok", summonerDTOs);
+        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
     }
 
 
