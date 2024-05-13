@@ -2,6 +2,7 @@ package carrotbat410.lol.entity;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,6 +14,7 @@ public abstract class BaseEntity {
     //TODO @CreationTimestamp vs @PrePersist
 //    @CreationTimestamp
     private LocalDateTime created_at;
+
 //    @UpdateTimestamp
     private LocalDateTime updated_at;
 
@@ -23,8 +25,9 @@ public abstract class BaseEntity {
         updated_at = now;
     }
 
-    public BaseEntity() {
-        this.updated_at = LocalDateTime.now();
+    @PreUpdate
+    public void preUpdate() {
+        updated_at = LocalDateTime.now();
     }
 
 }
