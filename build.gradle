@@ -66,4 +66,7 @@ configurations {
 //compileJava
 //	options.annotationProcessorPath = configurations.querydsl
 //}
+clean {
+	delete file(querydslDir)
+}
 //querydsl 추가 끝
