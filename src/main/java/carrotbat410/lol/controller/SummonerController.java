@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class SummonerController {
 
     private final SummonerService summonerService;
 
-    @GetMapping("/summoners")
+    @GetMapping("/summoners") //! 복수 주의
     public SuccessResult<List<SummonerDTO>> getSummoners() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -29,6 +30,15 @@ public class SummonerController {
         List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
 
         return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
+    }
+
+    @PostMapping("/summoner")
+    public SuccessResult<SummonerDTO> addSummoner() {
+        //TODO body로 받기, validation까지
+//        SummonerDTO addedSummoner = summonerService.addSummoner("E크에크파이크", "KR1"); // x
+//        SummonerDTO addedSummoner = summonerService.addSummoner("의심하지말고해", "KR1"); // 솔랭만
+        SummonerDTO addedSummoner = summonerService.addSummoner("오잉앵", "KR1"); // 솔랭, 팀랭
+        return new SuccessResult<>("ok", addedSummoner);
     }
 
 

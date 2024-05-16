@@ -3,6 +3,7 @@ package carrotbat410.lol.exhandler.advice;
 import carrotbat410.lol.dto.ErrorResult;
 import carrotbat410.lol.dto.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
+import carrotbat410.lol.exhandler.exception.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -68,7 +69,15 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult exHandle(Exception e) {
         log.error("[exceptionHandle] ex", e);
+        //TODO 텔레그램 메세지 추가하기?
         return new ErrorResult("EX", "내부 오류");
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler
+    public ErrorResult exHandle(JsonMappingException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResult("MAPPING", "Json Mapping Error");
     }
 
 }
