@@ -3,6 +3,8 @@ package carrotbat410.lol.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -31,9 +33,7 @@ public class RiotUtils {
         SummonerInfoDTO summonerInfo = getSummonerInfo(accountInfo.getPuuid());
         List<LeagueInfoDTO> leagueInfo = getLeagueInfo(summonerInfo.getId());
         //TODO getLeagueInfo 맵핑 마무리하기
-        //TODO 각 메서드 중복제거 및 최적화하기.
-        //TODO 맵핑할떄 DTO랑 형식 정확히 일치해야하는데 이 문제 해결할 방법 없나?(없으면 그냥 null로 맵핑되도록)
-        //TODO 예외처리 제대로 걸리는지 확인 및 추가 예외처리
+        //TODO 추가적인 예외처리
 
     }
 
@@ -48,17 +48,7 @@ public class RiotUtils {
                 .expand(summonerName, tagLine)
                 .toUri();
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
-        String accountInfoRequest = responseEntity.getBody();
-
-        AccountInfoDTO accountInfoDTO = null; //TODO accountInfo가 더 나은거 같은데
-
-        try {
-            accountInfoDTO = mapper.readValue(accountInfoRequest, AccountInfoDTO.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e); //TODO RuntimeException말고 다른 에러 반환해서 Advice에서 받기.
-        }
-        return accountInfoDTO;
+        return restTemplate.getForObject(uri, AccountInfoDTO.class);
     }
 
     private SummonerInfoDTO getSummonerInfo(String puuid) {
@@ -71,16 +61,7 @@ public class RiotUtils {
                 .expand(puuid)
                 .toUri();
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
-        String summonerInfoRequest = responseEntity.getBody();
-
-        SummonerInfoDTO summonerInfo = null;
-        try {
-            summonerInfo = mapper.readValue(summonerInfoRequest, SummonerInfoDTO.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e); //TODO RuntimeException말고 다른 에러 반환해서 Advice에서 받기.
-        }
-        return summonerInfo;
+        return restTemplate.getForObject(uri, SummonerInfoDTO.class);
     }
 
     private List<LeagueInfoDTO> getLeagueInfo(String summonerId) {
@@ -117,19 +98,18 @@ public class RiotUtils {
 
 
 
-    @Data
+    @Getter
+    @ToString
     public static class AccountInfoDTO {
         private String puuid;
         private String gameName;
         private String tagLine;
     }
 
-    @Data
+    @Getter
+    @ToString
     public static class SummonerInfoDTO {
         private String id;
-        private String accountId;
-        private String puuid;
-        private long revisionDate;
         private int profileIconId;
         private int summonerLevel;
     }
@@ -137,24 +117,19 @@ public class RiotUtils {
     /**
      * leagueInfoRequest = [
      * {
-     * "leagueId":"64de9d2d-89e0-3698-a7cd-a9b7e04ef3b6",
-     * "queueType":"RANKED_SOLO_5x5",
+     * "queueType":"RANKED_SOLO_5x5" ||
      * "tier":"MASTER",
      * "rank":"I",
      * "summonerId":"Xh870oQDH4F_Cm6bUF88JFonjzLANXcgLf6kKLPx7oToYmw",
      * "leaguePoints":227,
      * "wins":28,
      * "losses":11,
-     * "veteran":false,
-     * "inactive":false,
-     * "freshBlood":true,
-     * "hotStreak":true
      * }
      * ]
      */
-    @Data
+    @Getter
+    @ToString
     public static class LeagueInfoDTO {
-        private String leagueId;
         private String queueType;
         private String tier;
         private String rank;
@@ -162,10 +137,6 @@ public class RiotUtils {
         private int leaguePoints;
         private int wins;
         private int losses;
-        private boolean veteran;
-        private boolean inactive;
-        private boolean freshBlood;
-        private boolean hotStreak;
     }
 
 }
