@@ -2,10 +2,13 @@ package carrotbat410.lol.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -24,16 +27,17 @@ public class RiotUtils {
     @Value("${riot.api.url}")
     public String riotApiUrl;
 
+    //! 부하테스트할떄 진짜 api 요청하면 제한먹으니 조심.
+    //TODO WebClient로 바꾸기???
     private RestTemplate restTemplate = new RestTemplate();
     private ObjectMapper mapper = new ObjectMapper();
 
     public void getSummoner(String summonerName, String tagLine) {
-
         AccountInfoDTO accountInfo = getAccountInfo(summonerName, tagLine);
         SummonerInfoDTO summonerInfo = getSummonerInfo(accountInfo.getPuuid());
-        List<LeagueInfoDTO> leagueInfo = getLeagueInfo(summonerInfo.getId());
-        //TODO getLeagueInfo 맵핑 마무리하기
+        LeagueInfoDTO leagueInfo = getLeagueInfo(summonerInfo.getId());
         //TODO 추가적인 예외처리
+        //TODO 에러 메세지 텔레그램 전송 추가하기
 
     }
 
@@ -64,7 +68,7 @@ public class RiotUtils {
         return restTemplate.getForObject(uri, SummonerInfoDTO.class);
     }
 
-    private List<LeagueInfoDTO> getLeagueInfo(String summonerId) {
+    private LeagueInfoDTO getLeagueInfo(String summonerId) {
         URI uri = UriComponentsBuilder
                 .fromUriString(riotApiUrl)
                 .path("/lol/league/v4/entries/by-summoner/{summonerId}")
@@ -74,24 +78,20 @@ public class RiotUtils {
                 .expand(summonerId)
                 .toUri();
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
-        String leagueInfoRequest = responseEntity.getBody();
-        System.out.println("----------------------------------------------------------------");
-        System.out.println("leagueInfoRequest = " + leagueInfoRequest);
 
-        List<LeagueInfoDTO> leagueInfo = new ArrayList<>();
-        System.out.println("leagueInfoRequest.length() = " + leagueInfoRequest.length());
+        LeagueInfoDTO[] leagueInfoArr = restTemplate.getForObject(uri, LeagueInfoDTO[].class);
 
-        if(leagueInfoRequest.equals("[]")) return leagueInfo; //TODO 이게 최선인가?
-//        if(leagueInfoRequest.)
-        
-//        try {
-//            leagueInfo = mapper.readValue(leagueInfoRequest, LeagueInfoDTO.class);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
+        LeagueInfoDTO leagueInfo = null;
+        for (LeagueInfoDTO leagueInfoDTO : leagueInfoArr) {
+            if(leagueInfoDTO.getQueueType() == "RANKED_SOLO_5x5") {
+                leagueInfo = leagueInfoDTO;
+            }
+        }
 
-        System.out.println("최종 리턴값"+leagueInfo);
+        if(leagueInfo == null) {
+            leagueInfo = new LeagueInfoDTO("RANKED_SOLO_5x5", "UNRANKED", null, 0, 0, 0);
+        }
+
         return leagueInfo;
     }
 
@@ -129,11 +129,11 @@ public class RiotUtils {
      */
     @Getter
     @ToString
+    @AllArgsConstructor
     public static class LeagueInfoDTO {
         private String queueType;
         private String tier;
         private String rank;
-        private String summonerId;
         private int leaguePoints;
         private int wins;
         private int losses;
