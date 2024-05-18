@@ -21,22 +21,22 @@ public class SummonerController {
 
     private final SummonerService summonerService;
 
-    @GetMapping("/summoners") //! 복수 주의
-    public SuccessResult<List<SummonerDTO>> getSummoners() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = extractUserIdFromAuthentication(authentication);
-        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
-
-        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
-    }
+//    @GetMapping("/summoners") //! 복수 주의
+//    public SuccessResult<List<SummonerDTO>> getSummoners() {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Long userId = extractUserIdFromAuthentication(authentication);
+//        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
+//
+//        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
+//    }
 
     @PostMapping("/summoner")
     public SuccessResult<SummonerDTO> addSummoner() {
         //TODO body로 받기, validation까지
-//        SummonerDTO addedSummoner = summonerService.addSummoner("E크에크파이크", "KR1"); // x
-//        SummonerDTO addedSummoner = summonerService.addSummoner("의심하지말고해", "KR1"); // 솔랭만
-        SummonerDTO addedSummoner = summonerService.addSummoner("오잉앵", "KR1"); // 솔랭, 팀랭
+        SummonerDTO addedSummoner = summonerService.addSummoner(1L, "E크에크파이크", "KR1"); // 솔랭 팀랭 모두 언랭인경우
+//        SummonerDTO addedSummoner = summonerService.addSummoner(2L, "의심하지말고해", "KR1"); // 솔랭만
+//        SummonerDTO addedSummoner = summonerService.addSummoner(3L, "오잉앵", "KR1"); // 솔랭, 팀랭
         return new SuccessResult<>("ok", addedSummoner);
     }
 
