@@ -1,4 +1,4 @@
-package carrotbat410.lol.dto;
+package carrotbat410.lol.dto.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

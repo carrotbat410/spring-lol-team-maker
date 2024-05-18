@@ -1,6 +1,6 @@
 package carrotbat410.lol.service;
 
-import carrotbat410.lol.dto.JoinDTO;
+import carrotbat410.lol.dto.auth.JoinDTO;
 import carrotbat410.lol.entity.User;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import carrotbat410.lol.repository.UserRepository;

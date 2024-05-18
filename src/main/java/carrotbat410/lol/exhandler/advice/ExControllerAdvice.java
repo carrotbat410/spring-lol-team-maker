@@ -1,7 +1,7 @@
 package carrotbat410.lol.exhandler.advice;
 
-import carrotbat410.lol.dto.ErrorResult;
-import carrotbat410.lol.dto.FieldErrorResult;
+import carrotbat410.lol.dto.result.ErrorResult;
+import carrotbat410.lol.dto.result.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import carrotbat410.lol.exhandler.exception.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;

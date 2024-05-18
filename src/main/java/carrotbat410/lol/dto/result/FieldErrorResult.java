@@ -1,4 +1,4 @@
-package carrotbat410.lol.dto;
+package carrotbat410.lol.dto.result;
 
 import lombok.Getter;
 

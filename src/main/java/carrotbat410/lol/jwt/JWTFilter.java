@@ -1,7 +1,7 @@
 package carrotbat410.lol.jwt;
 
-import carrotbat410.lol.dto.CustomUserDetails;
-import carrotbat410.lol.dto.UserTokenDTO;
+import carrotbat410.lol.dto.auth.CustomUserDetails;
+import carrotbat410.lol.dto.auth.UserTokenDTO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

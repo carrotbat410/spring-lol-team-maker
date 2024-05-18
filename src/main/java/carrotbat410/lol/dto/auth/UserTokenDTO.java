@@ -1,4 +1,4 @@
-package carrotbat410.lol.dto;
+package carrotbat410.lol.dto.auth;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

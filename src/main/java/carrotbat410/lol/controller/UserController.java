@@ -1,7 +1,7 @@
 package carrotbat410.lol.controller;
 
-import carrotbat410.lol.dto.JoinDTO;
-import carrotbat410.lol.dto.SuccessResult;
+import carrotbat410.lol.dto.auth.JoinDTO;
+import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;

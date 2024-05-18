@@ -1,5 +1,6 @@
 package carrotbat410.lol.utils;
 
+import carrotbat410.lol.entity.Summoner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;

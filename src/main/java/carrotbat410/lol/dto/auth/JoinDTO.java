@@ -1,4 +1,4 @@
-package carrotbat410.lol.dto;
+package carrotbat410.lol.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

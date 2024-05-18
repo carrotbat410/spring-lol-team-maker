@@ -1,7 +1,7 @@
 package carrotbat410.lol.service;
 
-import carrotbat410.lol.dto.CustomUserDetails;
-import carrotbat410.lol.dto.UserTokenDTO;
+import carrotbat410.lol.dto.auth.CustomUserDetails;
+import carrotbat410.lol.dto.auth.UserTokenDTO;
 import carrotbat410.lol.entity.User;
 import carrotbat410.lol.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

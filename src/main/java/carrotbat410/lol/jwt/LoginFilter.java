@@ -1,7 +1,7 @@
 package carrotbat410.lol.jwt;
 
-import carrotbat410.lol.dto.CustomUserDetails;
-import carrotbat410.lol.dto.LoginDTO;
+import carrotbat410.lol.dto.auth.CustomUserDetails;
+import carrotbat410.lol.dto.auth.LoginDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
