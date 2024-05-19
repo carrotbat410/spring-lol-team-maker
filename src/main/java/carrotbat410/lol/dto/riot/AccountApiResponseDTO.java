@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class AccountInfoDTO {
+public class AccountApiResponseDTO {
     private String puuid;
     private String gameName;
     private String tagLine;

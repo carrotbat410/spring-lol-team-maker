@@ -1,9 +1,9 @@
 package carrotbat410.lol.utils;
 
 import carrotbat410.lol.dto.SummonerDTO;
-import carrotbat410.lol.dto.riot.AccountInfoDTO;
-import carrotbat410.lol.dto.riot.LeagueInfoDTO;
-import carrotbat410.lol.dto.riot.SummonerInfoDTO;
+import carrotbat410.lol.dto.riot.AccountApiResponseDTO;
+import carrotbat410.lol.dto.riot.LeagueApiResponseDTO;
+import carrotbat410.lol.dto.riot.SummonerApiResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,18 +33,16 @@ public class RiotUtils {
 
         //TODO Limit Rate 20 requests every 1 seconds, 100 requests every 2 minutes 인데, 1초에 20번 요청만 확인하기.
         //TODO League API 30 requests every 10 seconds 는 뭐지?
-        AccountInfoDTO accountInfo = getAccountInfo(summonerName, tagLine);
-        SummonerInfoDTO summonerInfo = getSummonerInfo(accountInfo.getPuuid());
-        LeagueInfoDTO leagueInfo = getLeagueInfo(summonerInfo.getId());
-        //TODO 추가적인 예외처리
-        //TODO 에러 메세지 텔레그램 전송 추가하기
+        AccountApiResponseDTO accountInfo = getAccountInfo(summonerName, tagLine);
+        SummonerApiResponseDTO summonerInfo = getSummonerInfo(accountInfo.getPuuid());
+        LeagueApiResponseDTO leagueInfo = getLeagueInfo(summonerInfo.getId());
 
         return SummonerDTO.of(accountInfo.getGameName(),
                 accountInfo.getTagLine(), leagueInfo.getTier(), leagueInfo.getRank(), summonerInfo.getSummonerLevel(),
                 leagueInfo.getWins(), leagueInfo.getLosses(), summonerInfo.getProfileIconId());
     }
 
-    private AccountInfoDTO getAccountInfo(String summonerName, String tagLine) {
+    private AccountApiResponseDTO getAccountInfo(String summonerName, String tagLine) {
 
         URI uri = UriComponentsBuilder
                 .fromUriString("https://asia.api.riotgames.com")
@@ -55,10 +53,10 @@ public class RiotUtils {
                 .expand(summonerName, tagLine)
                 .toUri();
 
-        return restTemplate.getForObject(uri, AccountInfoDTO.class);
+        return restTemplate.getForObject(uri, AccountApiResponseDTO.class);
     }
 
-    private SummonerInfoDTO getSummonerInfo(String puuid) {
+    private SummonerApiResponseDTO getSummonerInfo(String puuid) {
         URI uri = UriComponentsBuilder
                 .fromUriString(riotApiUrl)
                 .path("/lol/summoner/v4/summoners/by-puuid/{puuid}")
@@ -68,10 +66,10 @@ public class RiotUtils {
                 .expand(puuid)
                 .toUri();
 
-        return restTemplate.getForObject(uri, SummonerInfoDTO.class);
+        return restTemplate.getForObject(uri, SummonerApiResponseDTO.class);
     }
 
-    private LeagueInfoDTO getLeagueInfo(String summonerId) {
+    private LeagueApiResponseDTO getLeagueInfo(String summonerId) {
         URI uri = UriComponentsBuilder
                 .fromUriString(riotApiUrl)
                 .path("/lol/league/v4/entries/by-summoner/{summonerId}")
@@ -82,17 +80,17 @@ public class RiotUtils {
                 .toUri();
 
 
-        LeagueInfoDTO[] leagueInfoArr = restTemplate.getForObject(uri, LeagueInfoDTO[].class);
+        LeagueApiResponseDTO[] leagueInfoArr = restTemplate.getForObject(uri, LeagueApiResponseDTO[].class);
 
-        LeagueInfoDTO leagueInfo = null;
-        for (LeagueInfoDTO leagueInfoDTO : leagueInfoArr) {
-            if(leagueInfoDTO.getQueueType().equals("RANKED_SOLO_5x5")) {
-                leagueInfo = leagueInfoDTO;
+        LeagueApiResponseDTO leagueInfo = null;
+        for (LeagueApiResponseDTO leagueApiResponseDTO : leagueInfoArr) {
+            if(leagueApiResponseDTO.getQueueType().equals("RANKED_SOLO_5x5")) {
+                leagueInfo = leagueApiResponseDTO;
             }
         }
 
         if(leagueInfo == null) {
-            leagueInfo = new LeagueInfoDTO("RANKED_SOLO_5x5", "UNRANKED", null, 0, 0, 0);
+            leagueInfo = new LeagueApiResponseDTO("RANKED_SOLO_5x5", "UNRANKED", null, 0, 0, 0);
         }
 
         return leagueInfo;

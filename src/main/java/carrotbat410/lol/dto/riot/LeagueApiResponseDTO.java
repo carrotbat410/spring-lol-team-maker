@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class LeagueInfoDTO {
+public class LeagueApiResponseDTO {
     private String queueType;
     private String tier;
     private String rank;
