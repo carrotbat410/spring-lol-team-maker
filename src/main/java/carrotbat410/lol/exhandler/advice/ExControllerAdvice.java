@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice(basePackages = "carrotbat410.lol.controller")
@@ -61,6 +62,12 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult conflictDataHandle(AlreadyExistException e) {
         return new ErrorResult(e.getCode(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public ErrorResult pathVariableHandle(MethodArgumentTypeMismatchException e) {
+        return new ErrorResult(e.getErrorCode(), "매개변수의 타입을 확인해주세요.");
     }
 
 
