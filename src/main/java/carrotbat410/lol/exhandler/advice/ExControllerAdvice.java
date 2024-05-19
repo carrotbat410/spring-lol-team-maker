@@ -77,6 +77,7 @@ public class ExControllerAdvice {
     public ErrorResult exHandle(Exception e) {
         log.error("[exceptionHandle] ex", e);
         //TODO 텔레그램 메세지 추가하기?
+        //TODO log.error메세지 저장하기?
         return new ErrorResult("EX", "내부 오류");
     }
 
