@@ -42,5 +42,9 @@ public class SummonerService {
         return summonerDTO;
     }
 
+    public void deleteSummoner(Long summonerId) {
+        summonerRepository.deleteById(summonerId);
+    }
+
 
 }
