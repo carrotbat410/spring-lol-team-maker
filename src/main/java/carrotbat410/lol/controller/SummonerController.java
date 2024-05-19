@@ -42,14 +42,17 @@ public class SummonerController {
         String tagLine = addSummonerReqeustDTO.getTagLine();
         if(StringUtils.isBlank(tagLine)) tagLine = "KR1";
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = extractUserIdFromAuthentication(authentication);
+
         //TODO userId값 토큰에서 가져오기 (프론트에서 userId전달해서 받으면 안됨. 누가 프론트에서 조작해서 넘길 수 있으니?)
-        SummonerDTO addedSummoner = summonerService.addSummoner(1L, summonerName, tagLine);
-//        SummonerDTO addedSummoner = summonerService.addSummoner(1L, "통티모바베큐", "KR1"); // 솔랭 팀랭 모두 언랭인경우
-//        SummonerDTO addedSummoner1 = summonerService.addSummoner(1L, "E크에크파이크", "KR1"); // 솔랭
-//        SummonerDTO addedSummoner2 = summonerService.addSummoner(1L, "cikcik", "KR1"); // 솔랭 (챌린저)
-//        SummonerDTO addedSummoner3 = summonerService.addSummoner(1L, "범코야끼", "KR1"); // 솔랭 (그마)
-//        SummonerDTO addedSummoner4 = summonerService.addSummoner(1L, "근성맨", "KR1"); // 솔랭 (마스터)
-//        SummonerDTO addedSummoner5 = summonerService.addSummoner(1L, "오잉앵", "KR1"); // 솔랭, 팀랭
+        SummonerDTO addedSummoner = summonerService.addSummoner(userId, summonerName, tagLine);
+//        SummonerDTO addedSummoner = summonerService.addSummoner(userId, "통티모바베큐", "KR1"); // 솔랭 팀랭 모두 언랭인경우
+//        SummonerDTO addedSummoner1 = summonerService.addSummoner(userId, "E크에크파이크", "KR1"); // 솔랭
+//        SummonerDTO addedSummoner2 = summonerService.addSummoner(userId, "cikcik", "KR1"); // 솔랭 (챌린저)
+//        SummonerDTO addedSummoner3 = summonerService.addSummoner(userId, "범코야끼", "KR1"); // 솔랭 (그마)
+//        SummonerDTO addedSummoner4 = summonerService.addSummoner(userId, "근성맨", "KR1"); // 솔랭 (마스터)
+//        SummonerDTO addedSummoner5 = summonerService.addSummoner(userId, "오잉앵", "KR1"); // 솔랭, 팀랭
         return new SuccessResult<>("ok", addedSummoner);
     }
 
