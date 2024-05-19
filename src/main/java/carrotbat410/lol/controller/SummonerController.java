@@ -9,10 +9,14 @@ import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -21,15 +25,15 @@ public class SummonerController {
 
     private final SummonerService summonerService;
 
-//    @GetMapping("/summoners") //! 복수 주의
-//    public SuccessResult<List<SummonerDTO>> getSummoners() {
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Long userId = extractUserIdFromAuthentication(authentication);
-//        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
-//
-//        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
-//    }
+    @GetMapping("/summoners") //! 복수 주의
+    public SuccessResult<List<SummonerDTO>> getSummoners() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = extractUserIdFromAuthentication(authentication);
+        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
+
+        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
+    }
 
     @PostMapping("/summoner")
     public SuccessResult<SummonerDTO> addSummoner(@RequestBody @Validated AddSummonerReqeustDTO addSummonerReqeustDTO) {
