@@ -9,4 +9,6 @@ public interface SummonerRepository extends JpaRepository<Summoner, Long> {
 
     List<Summoner> findByUserId(Long userId);
 
+    Summoner  findFirstByUserIdAndSummonerNameAndTagLine(Long userId, String summonerName, String tagLine);
+
 }

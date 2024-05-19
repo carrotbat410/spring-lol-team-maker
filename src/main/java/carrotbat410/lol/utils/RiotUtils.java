@@ -1,16 +1,19 @@
 package carrotbat410.lol.utils;
 
-import carrotbat410.lol.dto.SummonerDTO;
+import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.riot.AccountApiResponseDTO;
 import carrotbat410.lol.dto.riot.LeagueApiResponseDTO;
 import carrotbat410.lol.dto.riot.SummonerApiResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 //TODO @Component vs static 유틸 클래스는 어떤게 더 나은지 찾아보기
 @Component
@@ -19,7 +22,19 @@ public class RiotUtils {
     private String apiKey;
 
     @Value("${riot.api.url}")
-    public String riotApiUrl;
+    private String riotApiUrl;
+
+    private final Map<String, Integer> TIER_BASE_POINTS = new HashMap<>();
+
+     {
+        TIER_BASE_POINTS.put("IRON", 0);
+        TIER_BASE_POINTS.put("BRONZE", 4);
+        TIER_BASE_POINTS.put("SILVER", 8);
+        TIER_BASE_POINTS.put("GOLD", 12);
+        TIER_BASE_POINTS.put("PLATINUM", 16);
+        TIER_BASE_POINTS.put("EMERALD", 20);
+        TIER_BASE_POINTS.put("DIAMOND", 24);
+    }
 
     //! 부하테스트할떄 진짜 api 요청하면 제한먹으니 조심.
     //TODO WebClient로 바꾸기???
@@ -37,8 +52,16 @@ public class RiotUtils {
         SummonerApiResponseDTO summonerInfo = getSummonerInfo(accountInfo.getPuuid());
         LeagueApiResponseDTO leagueInfo = getLeagueInfo(summonerInfo.getId());
 
+//        System.out.println("accountInfo = " + accountInfo);
+//        System.out.println("summonerInfo = " + summonerInfo);
+//        System.out.println("leagueInfo = " + leagueInfo);
+
+        Integer numberRank = RankStringToNumber(leagueInfo.getRank());
+
+        Integer mmr = CalculatMmr(leagueInfo.getTier(), numberRank);
+
         return SummonerDTO.of(accountInfo.getGameName(),
-                accountInfo.getTagLine(), leagueInfo.getTier(), leagueInfo.getRank(), summonerInfo.getSummonerLevel(),
+                accountInfo.getTagLine(), leagueInfo.getTier(), numberRank, mmr, summonerInfo.getSummonerLevel(),
                 leagueInfo.getWins(), leagueInfo.getLosses(), summonerInfo.getProfileIconId());
     }
 
@@ -89,11 +112,36 @@ public class RiotUtils {
             }
         }
 
-        if(leagueInfo == null) {
-            leagueInfo = new LeagueApiResponseDTO("RANKED_SOLO_5x5", "UNRANKED", null, 0, 0, 0);
-        }
+        if(leagueInfo == null) return new LeagueApiResponseDTO("RANKED_SOLO_5x5", "UNRANKED", null, 0, 0, 0);
 
         return leagueInfo;
+    }
+
+    private Integer RankStringToNumber(String rank) {
+        if(StringUtils.isNotBlank(rank)) {
+            if (rank.equals("I")) return 1;
+            if(rank.equals("II")) return 2;
+            if(rank.equals("III")) return 3;
+            if(rank.equals("IV")) return 4;
+        }
+        return null;
+    }
+
+    private Integer CalculatMmr(String tier, Integer rank) {
+        if(tier.equals("UNRANKED")) return 0;
+        if(tier.equals("MASTER")) return 29;
+        if(tier.equals("GRANDMASTER")) return 30;
+        if (tier.equals("CHALLENGER")) return 31;
+
+        /**
+         * 마스터,그마,챌린저 점수 세분화 추가할 경우 참고사항
+         * 마스터, 그마, 챌린저는 모두 rank=I로 제공함. leaguePoints=557를 참고해야함.
+         */
+
+        // IRON 4(1) ~ DIAMOND 1(28) 사이인 경우
+        int basePoints = TIER_BASE_POINTS.getOrDefault(tier, 0);
+        int rankPoints = 5 - rank;
+        return basePoints + rankPoints;
     }
 
 }
