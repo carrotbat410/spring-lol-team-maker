@@ -4,6 +4,7 @@ import carrotbat410.lol.dto.result.ErrorResult;
 import carrotbat410.lol.dto.result.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import carrotbat410.lol.exhandler.exception.JsonMappingException;
+import carrotbat410.lol.exhandler.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -70,6 +71,11 @@ public class ExControllerAdvice {
         return new ErrorResult(e.getErrorCode(), "매개변수의 타입을 확인해주세요.");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public ErrorResult notFoundHandle(NotFoundException e) {
+        return new ErrorResult(null, e.getMessage());
+    }
 
     //전체 예외 에러 처리
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
