@@ -3,6 +3,7 @@ package carrotbat410.lol.service;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
+import carrotbat410.lol.exhandler.exception.NotFoundException;
 import carrotbat410.lol.repository.SummonerRepository;
 import carrotbat410.lol.utils.RiotUtils;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,17 @@ public class SummonerService {
 
         return summonerDTO;
     }
+
+//    public void updateSummoner(Long summonerId) {
+//
+//        Optional<Summoner> summoner = summonerRepository.findById(summonerId);
+//
+//        if(summoner.isEmpty()) throw new NotFoundException("해당 유저는 존재하지 않습니다.");
+//
+//        SummonerDTO summonerDTO = riotUtils.getSummoner(summoner.get().getSummonerName(), summoner.get().getTagLine());
+//
+////        riotUtils.getSummoner()
+//    }
 
     public void deleteSummoner(Long summonerId) {
         summonerRepository.deleteById(summonerId);

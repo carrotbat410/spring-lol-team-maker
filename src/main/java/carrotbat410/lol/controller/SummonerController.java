@@ -53,6 +53,12 @@ public class SummonerController {
         return new SuccessResult<>("ok", addedSummoner);
     }
 
+//    @PatchMapping("/summoner/{summonerId}")
+//    public SuccessResult<SummonerDTO> updateSummoner(@PathVariable("summonerId") Long summonerId) {
+//        summonerService.updateSummoner(summonerId);
+//        return new SuccessResult<>("ok");
+//    }
+
     @DeleteMapping("/summoner/{summonerId}")
     public SuccessResult deleteSummoner(@PathVariable("summonerId") Long summonerId) {
         summonerService.deleteSummoner(summonerId);
