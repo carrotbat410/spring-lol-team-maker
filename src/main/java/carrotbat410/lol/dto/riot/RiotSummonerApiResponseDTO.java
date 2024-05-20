@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class SummonerApiResponseDTO {
+public class RiotSummonerApiResponseDTO {
     private String id;
     private int profileIconId;
     private int summonerLevel;

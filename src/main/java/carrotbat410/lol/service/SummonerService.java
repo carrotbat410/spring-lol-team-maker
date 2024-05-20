@@ -1,5 +1,6 @@
 package carrotbat410.lol.service;
 
+import carrotbat410.lol.dto.riot.SummonerApiTotalDTO;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
@@ -34,14 +35,14 @@ public class SummonerService {
 
         if(existingAddedSummoner != null) throw new AlreadyExistException("이미 존재하는 유저입니다.");
 
-        SummonerDTO summonerDTO = riotUtils.getSummoner(summonerName, tagLine);
+        SummonerApiTotalDTO apiResult = riotUtils.getSummoner(summonerName, tagLine);
 
-        Summoner summoner = Summoner.of(userId, summonerDTO.getSummonerName(), summonerDTO.getTagLine(), summonerDTO.getTier(), summonerDTO.getRank(),
-                summonerDTO.getMmr(), summonerDTO.getLevel(), summonerDTO.getWins(), summonerDTO.getLosses(), summonerDTO.getIconId());
+        Summoner summoner = Summoner.of(userId, apiResult.getSummonerName(), apiResult.getTagLine(), apiResult.getTier(), apiResult.getRank(),
+                apiResult.getMmr(), apiResult.getLevel(), apiResult.getWins(), apiResult.getLosses(), apiResult.getIconId());
 
-        summonerRepository.save(summoner);
+        Summoner saveResult = summonerRepository.save(summoner);
 
-        return summonerDTO;
+        return SummonerDTO.from(saveResult);
     }
 
 //    public void updateSummoner(Long summonerId) {
