@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
@@ -75,6 +76,14 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult notFoundHandle(NotFoundException e) {
         return new ErrorResult(null, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler
+    public ErrorResult RiotApiErrorHandle(HttpClientErrorException e) {
+        log.error("외부 api 요청중 에러 발생", e);
+        //e.getStatusCode().value(); 해야 403, 404 숫자만 가져옴.
+        return new ErrorResult(e.getStatusText(), e.getMessage());
     }
 
     //전체 예외 에러 처리
