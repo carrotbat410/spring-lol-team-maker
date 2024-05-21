@@ -2,10 +2,7 @@ package carrotbat410.lol.exhandler.advice;
 
 import carrotbat410.lol.dto.result.ErrorResult;
 import carrotbat410.lol.dto.result.FieldErrorResult;
-import carrotbat410.lol.exhandler.exception.AlreadyExistException;
-import carrotbat410.lol.exhandler.exception.JsonMappingException;
-import carrotbat410.lol.exhandler.exception.NotFoundException;
-import carrotbat410.lol.exhandler.exception.RateExceededException;
+import carrotbat410.lol.exhandler.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -61,12 +58,6 @@ public class ExControllerAdvice {
         return new FieldErrorResult(code, message, fieldName);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler
-    public ErrorResult conflictDataHandle(AlreadyExistException e) {
-        return new ErrorResult(e.getCode(), e.getMessage());
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ErrorResult pathVariableHandle(MethodArgumentTypeMismatchException e) {
@@ -77,6 +68,18 @@ public class ExControllerAdvice {
     @ExceptionHandler
     public ErrorResult notFoundHandle(NotFoundException e) {
         return new ErrorResult(null, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler
+    public ErrorResult accessDeniedHandle(AccessDeniedException e) {
+        return new ErrorResult(null, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler
+    public ErrorResult conflictDataHandle(AlreadyExistException e) {
+        return new ErrorResult(e.getCode(), e.getMessage());
     }
 
     //전체 예외 에러 처리
