@@ -3,26 +3,30 @@ package carrotbat410.lol.entity;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class BaseEntity {
 
     //TODO @CreationTimestamp vs @PrePersist
 //    @CreationTimestamp
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
 //    @UpdateTimestamp
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
-        created_at = now;
-        updated_at = now;
+        createdAt = now;
+        updatedAt = now;
     }
 
     @PreUpdate
