@@ -4,6 +4,8 @@ import carrotbat410.lol.dto.auth.CustomUserDetails;
 import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.summoner.AddSummonerReqeustDTO;
+import carrotbat410.lol.exhandler.exception.DataConflictException;
+import carrotbat410.lol.exhandler.exception.RateExceededException;
 import carrotbat410.lol.service.SummonerService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +37,16 @@ public class SummonerController {
     @PostMapping("/summoner")
     public SuccessResult<SummonerDTO> addSummoner(@RequestBody @Validated AddSummonerReqeustDTO addSummonerReqeustDTO) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = extractUserIdFromAuthentication(authentication);
+
+        int addedSummonerCnt = summonerService.getAddedSummonerCnt(userId);
+        if(addedSummonerCnt >= 30) throw new DataConflictException("추가할 수 있는 최대 인원은 30명입니다.");
+
         String summonerName = addSummonerReqeustDTO.getSummonerName();
         String tagLine = addSummonerReqeustDTO.getTagLine();
         if(StringUtils.isBlank(tagLine)) tagLine = "KR1";
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = extractUserIdFromAuthentication(authentication);
-
-        //TODO userId값 토큰에서 가져오기 (프론트에서 userId전달해서 받으면 안됨. 누가 프론트에서 조작해서 넘길 수 있으니?)
         SummonerDTO addedSummoner = summonerService.addSummoner(userId, summonerName, tagLine);
 //        SummonerDTO addedSummoner = summonerService.addSummoner(userId, "통티모바베큐", "KR1"); // 솔랭 팀랭 모두 언랭인경우
 //        SummonerDTO addedSummoner1 = summonerService.addSummoner(userId, "E크에크파이크", "KR1"); // 솔랭

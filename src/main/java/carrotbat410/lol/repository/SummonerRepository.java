@@ -12,4 +12,7 @@ public interface SummonerRepository extends JpaRepository<Summoner, Long> {
     Summoner findFirstByUserIdAndSummonerNameAndTagLine(Long userId, String summonerName, String tagLine);
 
     void deleteByUserId(Long userId);
+
+    int countByUserId(Long userId);
+
 }

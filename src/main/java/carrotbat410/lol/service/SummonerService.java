@@ -3,7 +3,7 @@ package carrotbat410.lol.service;
 import carrotbat410.lol.dto.riot.SummonerApiTotalDTO;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
-import carrotbat410.lol.exhandler.exception.AlreadyExistException;
+import carrotbat410.lol.exhandler.exception.DataConflictException;
 import carrotbat410.lol.exhandler.exception.NotFoundException;
 import carrotbat410.lol.repository.SummonerRepository;
 import carrotbat410.lol.utils.RiotUtils;
@@ -11,10 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class SummonerService {
 
         Summoner existingAddedSummoner = summonerRepository.findFirstByUserIdAndSummonerNameAndTagLine(userId, summonerName, tagLine);
 
-        if(existingAddedSummoner != null) throw new AlreadyExistException("이미 존재하는 유저입니다.");
+        if(existingAddedSummoner != null) throw new DataConflictException("이미 존재하는 유저입니다.");
 
         SummonerApiTotalDTO apiResult = riotUtils.getSummoner(summonerName, tagLine);
 
@@ -59,6 +57,10 @@ public class SummonerService {
         summoner.updateTimestamp(); // 최종적으로 update쿼리는 한번만 나간다(JPA는 commit시점에 한번에 최적화하여 호출하니까)
 
         return SummonerDTO.from(summoner);
+    }
+
+    public int getAddedSummonerCnt(Long userid) {
+        return summonerRepository.countByUserId(userid);
     }
 
     public void deleteSummoner(Long summonerId) {
