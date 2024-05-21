@@ -56,7 +56,7 @@ public class SummonerService {
 
         summoner.updateSummoner(apiResult);
 
-        summoner.updateTimestamp();
+        summoner.updateTimestamp(); // 최종적으로 update쿼리는 한번만 나간다(JPA는 commit시점에 한번에 최적화하여 호출하니까)
 
         return SummonerDTO.from(summoner);
     }
