@@ -5,6 +5,7 @@ import carrotbat410.lol.dto.result.FieldErrorResult;
 import carrotbat410.lol.exhandler.exception.AlreadyExistException;
 import carrotbat410.lol.exhandler.exception.JsonMappingException;
 import carrotbat410.lol.exhandler.exception.NotFoundException;
+import carrotbat410.lol.exhandler.exception.RateExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -78,14 +79,6 @@ public class ExControllerAdvice {
         return new ErrorResult(null, e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler
-    public ErrorResult RiotApiErrorHandle(HttpClientErrorException e) {
-        log.error("외부 api 요청중 에러 발생", e);
-        //e.getStatusCode().value(); 해야 403, 404 숫자만 가져옴.
-        return new ErrorResult(e.getStatusText(), e.getMessage());
-    }
-
     //전체 예외 에러 처리
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler
@@ -102,5 +95,25 @@ public class ExControllerAdvice {
         log.error("[exceptionHandle] ex", e);
         return new ErrorResult("MAPPING", "Json Mapping Error");
     }
+
+
+    // 외부 API 호출 관련 //TODO 특히, 텔레그램 메세지 알림 추가하기. (e.getStatusCode().value(); 해야 403, 409 숫자만 가져옴.)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler
+    public ErrorResult rateExceededHandle(RateExceededException e) {
+        log.error("외부 api 요청중 에러 발생", e);
+
+        return new ErrorResult(null, e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler
+    public ErrorResult apiErrorHandle(HttpClientErrorException e) {
+        log.error("외부 api 요청중 에러 발생", e);
+
+        //TODO 텔레그램 메세지 알림 추가하기. (e.getStatusCode().value(); 해야 403, 409 숫자만 가져옴.)
+        return new ErrorResult(e.getStatusText(), "외부 API 호출 도중 에러 발생");
+    }
+
 
 }

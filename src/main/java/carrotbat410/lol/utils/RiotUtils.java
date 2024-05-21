@@ -5,10 +5,13 @@ import carrotbat410.lol.dto.riot.RiotLeagueApiResponseDTO;
 import carrotbat410.lol.dto.riot.RiotSummonerApiResponseDTO;
 import carrotbat410.lol.dto.riot.SummonerApiTotalDTO;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
+import carrotbat410.lol.exhandler.exception.NotFoundException;
+import carrotbat410.lol.exhandler.exception.RateExceededException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -49,9 +52,24 @@ public class RiotUtils {
 
         //TODO Limit Rate 20 requests every 1 seconds, 100 requests every 2 minutes 인데, 1초에 20번 요청만 확인하기.
         //TODO League API 30 requests every 10 seconds 는 뭐지?
-        RiotAccountApiResponseDTO accountApiInfo = getAccountInfo(summonerName, tagLine);
-        RiotSummonerApiResponseDTO summonerApiInfo = getSummonerInfo(accountApiInfo.getPuuid());
-        RiotLeagueApiResponseDTO leagueApiInfo = getLeagueInfo(summonerApiInfo.getId());
+
+        RiotAccountApiResponseDTO accountApiInfo = null;
+        RiotSummonerApiResponseDTO summonerApiInfo = null;
+        RiotLeagueApiResponseDTO leagueApiInfo = null;
+
+        try {
+            accountApiInfo = getAccountInfo(summonerName, tagLine);
+            summonerApiInfo = getSummonerInfo(accountApiInfo.getPuuid());
+            leagueApiInfo = getLeagueInfo(summonerApiInfo.getId());
+        }catch (HttpClientErrorException e) {
+
+            Integer statusCode = e.getStatusCode().value();
+
+            if(statusCode == 404) throw new NotFoundException("RIOT API에 등록되지 않은 소환사명입니다.", e);
+            if(statusCode == 429) throw new RateExceededException("현재 서버에 너무 많은 요청이 있습니다. 잠시 후 다시 요청해주세요.", e);
+
+            throw new HttpClientErrorException(e.getStatusCode());
+        }
 
         Integer numberRank = RankStringToNumber(leagueApiInfo.getRank());
         Integer mmr = CalculatMmr(leagueApiInfo.getTier(), numberRank);
