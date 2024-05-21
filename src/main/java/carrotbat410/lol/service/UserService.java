@@ -2,7 +2,7 @@ package carrotbat410.lol.service;
 
 import carrotbat410.lol.dto.auth.JoinDTO;
 import carrotbat410.lol.entity.User;
-import carrotbat410.lol.exhandler.exception.AlreadyExistException;
+import carrotbat410.lol.exhandler.exception.DataConflictException;
 import carrotbat410.lol.repository.SummonerRepository;
 import carrotbat410.lol.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,7 +45,7 @@ public class UserService {
 
     private void validateDuplicatedUser(String username) {
         Boolean isExist = userRepository.existsByUsername(username);
-        if (isExist) throw new AlreadyExistException("이미 존재하는 유저입니다.");
+        if (isExist) throw new DataConflictException("이미 존재하는 유저입니다.");
     }
 
 }

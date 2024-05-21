@@ -78,7 +78,7 @@ public class ExControllerAdvice {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler
-    public ErrorResult conflictDataHandle(AlreadyExistException e) {
+    public ErrorResult conflictDataHandle(DataConflictException e) {
         return new ErrorResult(e.getCode(), e.getMessage());
     }
 
