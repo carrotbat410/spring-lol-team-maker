@@ -1,7 +1,10 @@
 package carrotbat410.lol.entity;
 
+import carrotbat410.lol.dto.riot.SummonerApiTotalDTO;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -31,5 +34,17 @@ public class Summoner extends BaseEntity {
     public static Summoner of(Long userId, String summonerName, String tagLine, String tier, Integer rank,
                               int mmr, int level, int wins, int losses, int iconId){
         return new Summoner(null, userId, summonerName, tagLine, tier, rank, mmr, level, wins, losses, iconId);
+    }
+
+    public void updateSummoner(SummonerApiTotalDTO apiResult) {
+        summonerName = apiResult.getSummonerName();
+        tagLine = apiResult.getTagLine();
+        tier = apiResult.getTier();
+        rank1 = apiResult.getRank();
+        mmr = apiResult.getMmr();
+        level = apiResult.getLevel();
+        wins = apiResult.getWins();
+        losses = apiResult.getLosses();
+        iconId = apiResult.getIconId();
     }
 }

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -20,17 +23,15 @@ public class SummonerDTO {
     private final int wins;
     private final int losses;
     private final int iconId;
-
+    private final String updatedAt;
 
     public static SummonerDTO from(Summoner summoner) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedUpdatedAt = summoner.getUpdatedAt().format(formatter);
+
         return new SummonerDTO(
                 summoner.getId(), summoner.getSummonerName(), summoner.getTagLine(), summoner.getTier(), summoner.getRank1(),
-                summoner.getMmr(), summoner.getLevel(), summoner.getWins(), summoner.getLosses(),summoner.getIconId());
-    }
-
-    public static SummonerDTO from(SummonerApiTotalDTO summonerApiTotalDTO, Long summonerId) {
-        return new SummonerDTO(summonerId, summonerApiTotalDTO.getSummonerName(), summonerApiTotalDTO.getTagLine(), summonerApiTotalDTO.getTier(), summonerApiTotalDTO.getRank(),
-                summonerApiTotalDTO.getMmr(), summonerApiTotalDTO.getLevel(), summonerApiTotalDTO.getWins(), summonerApiTotalDTO.getLosses(), summonerApiTotalDTO.getIconId());
+                summoner.getMmr(), summoner.getLevel(), summoner.getWins(), summoner.getLosses(),summoner.getIconId(), formattedUpdatedAt);
     }
 
 }
