@@ -17,21 +17,21 @@ public abstract class BaseEntity {
 
     //TODO @CreationTimestamp vs @PrePersist
 //    @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime created_at;
 
 //    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
 
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
-        createdAt = now;
-        updatedAt = now;
+        created_at = now;
+        updated_at = now;
     }
 
     @PreUpdate
     public void preUpdate() {
-        updatedAt = LocalDateTime.now();
+        updated_at = LocalDateTime.now();
     }
 
 }
