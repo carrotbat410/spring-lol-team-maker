@@ -11,8 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-@Getter
-@Setter
 public abstract class BaseEntity {
 
     //TODO @CreationTimestamp vs @PrePersist
@@ -30,8 +28,11 @@ public abstract class BaseEntity {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void updateTimestamp() {
         updated_at = LocalDateTime.now();
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updated_at;
+    }
 }
