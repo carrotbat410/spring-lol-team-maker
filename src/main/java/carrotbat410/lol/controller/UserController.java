@@ -1,10 +1,15 @@
 package carrotbat410.lol.controller;
 
+import carrotbat410.lol.dto.auth.CustomUserDetails;
 import carrotbat410.lol.dto.auth.JoinDTO;
 import carrotbat410.lol.dto.result.SuccessResult;
+import carrotbat410.lol.exhandler.exception.AccessDeniedException;
 import carrotbat410.lol.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,4 +30,33 @@ public class UserController {
 
         return new SuccessResult("ok");
     }
+
+    @DeleteMapping("/user")
+    public SuccessResult deleteUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = extractUsernameFromAuthentication(authentication);
+
+        if(username.equals("test1")) throw new AccessDeniedException("test 계정은 회원 탈퇴할 수 없습니다.");
+
+        Long id = extractUserIdFromAuthentication(authentication);
+
+        userService.deleteUser(id);
+
+        return new SuccessResult("ok");
+    }
+
+    private Long extractUserIdFromAuthentication(Authentication authentication) {
+        // Authentication 객체에서 사용자 ID를 추출하는 로직
+        // CustomUserDetails를 사용하여 사용자 ID를 추출할 수 있음.
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getId();
+    }
+
+    private String extractUsernameFromAuthentication(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
+    }
+
 }
