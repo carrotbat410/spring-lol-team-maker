@@ -5,11 +5,13 @@ import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.summoner.AddSummonerReqeustDTO;
 import carrotbat410.lol.exhandler.exception.DataConflictException;
-import carrotbat410.lol.exhandler.exception.RateExceededException;
 import carrotbat410.lol.service.SummonerService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -25,13 +27,14 @@ public class SummonerController {
     private final SummonerService summonerService;
 
     @GetMapping("/summoners") //! 복수 주의
-    public SuccessResult<List<SummonerDTO>> getSummoners() {
-
+    public SuccessResult<List<SummonerDTO>> getSummoners(Pageable pageable) {
+        
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = extractUserIdFromAuthentication(authentication);
-        List<SummonerDTO> summonerDTOs = summonerService.getSummoners(userId);
 
-        return new SuccessResult<>("ok", summonerDTOs, summonerDTOs.size());
+        List<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
+
+        return new SuccessResult<>("ok", summoners, summoners.size());
     }
 
     @PostMapping("/summoner")
