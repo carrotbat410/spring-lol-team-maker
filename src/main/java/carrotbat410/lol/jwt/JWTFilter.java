@@ -2,6 +2,8 @@ package carrotbat410.lol.jwt;
 
 import carrotbat410.lol.dto.auth.CustomUserDetails;
 import carrotbat410.lol.dto.auth.UserTokenDTO;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +24,11 @@ public class JWTFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.equals("/login") || path.equals("/") || path.equals("/join") || path.equals("/error");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -34,8 +41,8 @@ public class JWTFilter extends OncePerRequestFilter {
         //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
 
-            System.out.println("token null");
-            filterChain.doFilter(request, response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("no token");
 
             //조건이 해당되면 메소드 종료 (필수)
             return;
@@ -43,15 +50,20 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String token = authorization.split(" ")[1];
 
-
-        System.out.println("token: " + token);
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
-
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-
-            //조건이 해당되면 메소드 종료 (필수)
+        //token 검증
+        try {
+            jwtUtil.isExpired(token);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expired");
+            return ;
+        } catch (SignatureException e) {
+            //TODO 텔레그램 메시지 남기기, 누군가 토큰 변조함
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("token is invalid");
+            return ;
+        } catch (Exception e) {
+            //TODO 텔레그램 메시지 남기기, 다른 예외
             return;
         }
 
