@@ -6,6 +6,7 @@ import carrotbat410.lol.jwt.LoginFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -57,8 +58,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join", "/main/{id}", "/error").permitAll() //! 임시로 이렇게 둠
-                        .requestMatchers("/admin", "/summoner", "/user").hasRole("ADMIN")
+                        .requestMatchers("/login", "/join", "/error").permitAll() //! 임시로 /error 이렇게 둠
+                        .requestMatchers("/summoner", "/summoners", "/user").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin").hasRole("ADMIN") //.requestMatchers(HttpMethod.GET,"/admin") 이런식으로 필요하면 특정 HttpMethod도 조합 가능.
                         .anyRequest().authenticated());
 
         http

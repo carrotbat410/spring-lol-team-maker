@@ -33,7 +33,7 @@ public class UserService {
 
         validateDuplicatedUser(username);
 
-        User user = new User(username, bCryptPasswordEncoder.encode(password), "ROLE_ADMIN"); //TODO ENUM으로 바꾸기, ROLE_USER경우 추가하기
+        User user = new User(username, bCryptPasswordEncoder.encode(password), "ROLE_USER"); //TODO 게시판 기능 구현할거면,ENUM으로 사용하기
 
         userRepository.save(user);
     }
