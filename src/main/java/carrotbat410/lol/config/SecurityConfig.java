@@ -58,7 +58,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/join", "/error").permitAll() //! 임시로 /error 이렇게 둠
+                        .requestMatchers("/login", "/join", "/error").permitAll() //! 임시로 /error 이렇게 둠. JWTFilter의 shouldNotFilter에도 등록해야함
                         .requestMatchers("/summoner", "/summoners", "/user").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin").hasRole("ADMIN") //.requestMatchers(HttpMethod.GET,"/admin") 이런식으로 필요하면 특정 HttpMethod도 조합 가능.
                         .anyRequest().authenticated());
