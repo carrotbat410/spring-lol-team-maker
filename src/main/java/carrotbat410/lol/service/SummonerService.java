@@ -27,6 +27,10 @@ public class SummonerService {
 
     public SummonerDTO addSummoner(Long userId, String summonerName, String tagLine) {
 
+        //TODO 묵직한큰주먹 추가하고, 묵직한 큰주먹 추가해도 지금 되고있음. 자체 db검증할떄는 띄어쓰기 제거하기 중복되는거 있는지 체크해야함. + 대소문자 차이없이 검색해야함.
+        // test case1. 묵직한큰주먹, 묵직한 큰주먹, 묵직한 큰 주먹.   의문인 점은 Riot api요청시 Akaps, Aka ps는 안되네?
+        // test case2. 바로 Mute All, 바로 Mute all, 바로 mute all
+        // test case3. Mute all Ignore
         Summoner existingAddedSummoner = summonerRepository.findFirstByUserIdAndSummonerNameAndTagLine(userId, summonerName, tagLine);
 
         if(existingAddedSummoner != null) throw new DataConflictException("이미 존재하는 유저입니다.");
