@@ -25,7 +25,7 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping("/team")
-    public SuccessResult makeTeamResult(@RequestBody @Validated TeamAssignRequestDTO requestDTO) {
+    public SuccessResult<TeamAssignResponseDTO> makeTeamResult(@RequestBody @Validated TeamAssignRequestDTO requestDTO) {
 
         if(requestDTO.getTeam1List().length + requestDTO.getTeam2List().length + requestDTO.getNoTeamList().length != 10) {
             throw new IllegalArgumentException("필요 인원은 10명 입니다.");
@@ -36,14 +36,12 @@ public class TeamController {
 
         TeamAssignResponseDTO result;
 
-        if(requestDTO.getAssingMode() == RANDOM) result = teamService.makeResultWithBalanceMode(requestDTO);
+        if(requestDTO.getAssingMode() == RANDOM) result = teamService.makeResultWithRandomMode(requestDTO);
         else if(requestDTO.getAssingMode() == BALANCE) result = teamService.makeResultWithBalanceMode(requestDTO);
         else if(requestDTO.getAssingMode() == GOLDEN_BALANCE) result = teamService.makeResultWithGoldenBalanceMode(requestDTO);
         else throw new IllegalArgumentException("제공하지 않는 모드입니다.");
 
-        System.out.println("result = " + result);
-
-        return new SuccessResult<>("ok");
+        return new SuccessResult<>("ok", result);
     }
 
 }
