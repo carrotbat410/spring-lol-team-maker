@@ -26,6 +26,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
@@ -70,3 +72,8 @@ clean {
 	delete file(querydslDir)
 }
 //querydsl 추가 끝
+
+//Actuator.info 관련 설정 (build/resources/main/NETA-INF에 build-info 파일 생성함.)
+springBoot {
+	buildInfo()
+}
