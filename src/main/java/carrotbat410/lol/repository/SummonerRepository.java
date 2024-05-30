@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SummonerRepository extends JpaRepository<Summoner, Long>, SummonerRepositoryCustom {
 
-    Summoner findFirstByUserIdAndSummonerNameAndTagLine(Long userId, String summonerName, String tagLine);
+//    Summoner findFirstByUserIdAndSummonerNameAndTagLine(Long userId, String summonerName, String tagLine);
 
     void deleteByUserId(Long userId);
 

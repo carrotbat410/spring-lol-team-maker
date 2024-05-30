@@ -5,6 +5,8 @@ import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.entity.User;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -14,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static carrotbat410.lol.entity.QSummoner.summoner;
+import static carrotbat410.lol.entity.QSummoner.*;
 
 //! 클래스명은 spring data jpa interface + Impl 이여야함. =>  SummonerRepository+Imple
 public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
@@ -62,4 +64,30 @@ public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
         return content;
     }
 
+    @Override
+    public Summoner findExistingSummoner(Long userId, String summonerName, String tagLine) {
+        summonerName = summonerName.toLowerCase();
+
+        JPAQuery<Summoner> query = queryFactory
+                .select(summoner)
+                .from(summoner)
+                .where(summoner.userId.eq(userId))
+                .where(summoner.tagLine.eq(tagLine));
+
+        if(isPureEnglish(summonerName)) {
+            query.where(Expressions.stringTemplate("LOWER({0})", summoner.summonerName).eq(summonerName));
+        }else {
+            summonerName = summonerName.replaceAll("\\s", "");
+            query.where(Expressions.stringTemplate("REPLACE(LOWER({0}), ' ', '')", summoner.summonerName).eq(summonerName));
+        }
+
+        Summoner content = query.fetchOne();
+
+        return content;
+    }
+
+    private boolean isPureEnglish(String summonerName) {
+        //공백은 있든 없든 판단에 상관 없다.
+        return summonerName.replaceAll("\\s", "").matches("^[a-zA-Z]+$");
+    }
 }
