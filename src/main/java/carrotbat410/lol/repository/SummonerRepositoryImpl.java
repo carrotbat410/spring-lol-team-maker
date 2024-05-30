@@ -27,7 +27,7 @@ public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
 
 
     @Override
-    public List<SummonerDTO> getSummonersByUserId(Long userId, Pageable pageable) {
+    public List<SummonerDTO> findMySummoners(Long userId, Pageable pageable) {
 
         List<SummonerDTO> content = queryFactory
                 .select(new QSummonerDTO(

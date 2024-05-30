@@ -22,7 +22,7 @@ public class SummonerService {
     private final RiotUtils riotUtils;
 
     public List<SummonerDTO> getSummoners(Long userId, Pageable pageable) {
-        return summonerRepository.getSummonersByUserId(userId, pageable);
+        return summonerRepository.findMySummoners(userId, pageable);
     }
 
     public SummonerDTO addSummoner(Long userId, String summonerName, String tagLine) {
