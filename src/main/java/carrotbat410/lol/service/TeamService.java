@@ -3,6 +3,8 @@ package carrotbat410.lol.service;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.team.TeamAssignRequestDTO;
 import carrotbat410.lol.dto.team.TeamAssignResponseDTO;
+import carrotbat410.lol.utils.RiotUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,38 +13,39 @@ import java.util.*;
 @Service
 public class TeamService {
 
-    //TODO (모니터링, 부하 테스트 먼저 만든 후)Random, balance, goldenBalance 개선하기.
+    @Autowired
+    RiotUtils riotUtils;
+
     public TeamAssignResponseDTO makeResultWithRandomMode(TeamAssignRequestDTO requestDTO) {
-        ArrayList<SummonerDTO> finalTeam1List = new ArrayList<>();
-        ArrayList<SummonerDTO> finalTeam2List = new ArrayList<>();
+        //* Request Response 의 타입을 인터페이스인 List로 선언하니 훨 나은듯
+        ArrayList<SummonerDTO> finalTeam1List = (ArrayList<SummonerDTO>) requestDTO.getTeam1List();
+        ArrayList<SummonerDTO> finalTeam2List = (ArrayList<SummonerDTO>) requestDTO.getTeam2List();
+        ArrayList<SummonerDTO> noTeamList = (ArrayList<SummonerDTO>) requestDTO.getNoTeamList();
+
+        //#1. 인덱스 0 ~ noTeamList.size() 사이 숫자에서 requiredTeam1Cnt개 뽑기.
+        int requiredTeam1Cnt = 5 - requestDTO.getTeam1List().size();
+        List<Integer> selectedNumbers = selectNumbers(noTeamList.size(), requiredTeam1Cnt);
+
+        //#2. noTeamList -> team1으로 옮기기
+        for (Integer selectedNumber : selectedNumbers) {
+            finalTeam1List.add(noTeamList.get(selectedNumber));
+            noTeamList.remove(selectedNumber);
+        }
+
+        //#3. noTeamList에 남아있는 나머지 전부 -> team2로 옮기기
+        for (SummonerDTO summonerDTO : noTeamList) finalTeam2List.add(summonerDTO);
+
+        //#4. 각 팀의 평균 mmr 구해서 String으로 반환하기
         int team1AvgMmrSum = 0;
         int team2AvgMmrSum = 0;
-        HashMap<Integer, SummonerDTO> tmpNoTeamList = new HashMap<>();
-
-        for (SummonerDTO summonerDTO : finalTeam1List) finalTeam1List.add(summonerDTO);
-        for (SummonerDTO summonerDTO : finalTeam2List) finalTeam2List.add(summonerDTO);
-        for(int i = 0; i < requestDTO.getNoTeamList().length; i++) tmpNoTeamList.put(i, requestDTO.getNoTeamList()[i]);
-
-        int requiredTeam1Cnt = 5 - requestDTO.getTeam1List().length;
-        List<Integer> selectedNumbers = selectNumbers(requestDTO.getNoTeamList().length, requiredTeam1Cnt);
-
-        System.out.println("selectedNumbers = " + selectedNumbers);
-        for (int selectedNumber : selectedNumbers) {
-            team1AvgMmrSum += tmpNoTeamList.get(selectedNumber).getMmr();
-            finalTeam1List.add(tmpNoTeamList.get(selectedNumber));
-            tmpNoTeamList.remove(selectedNumber);
-        }
-        System.out.println("남아있는 인원:" + tmpNoTeamList.size());
-        for (Integer key : tmpNoTeamList.keySet()) {
-            team2AvgMmrSum += tmpNoTeamList.get(key).getMmr();
-            finalTeam2List.add(tmpNoTeamList.get(key));
-        }
-
+        for (SummonerDTO summonerDTO : finalTeam1List) team1AvgMmrSum += summonerDTO.getMmr();
+        for (SummonerDTO summonerDTO : finalTeam2List) team2AvgMmrSum += summonerDTO.getMmr();
         Integer team1AvgMmr = Math.round(team1AvgMmrSum / 5);
         Integer team2AvgMmr = Math.round(team2AvgMmrSum / 5);
+        String team1AvgMmrToString = riotUtils.mmrToString(team1AvgMmr);
+        String team2AvgMmrToString = riotUtils.mmrToString(team2AvgMmr);
 
-
-        TeamAssignResponseDTO result = new TeamAssignResponseDTO(finalTeam1List, finalTeam2List, "임시!! GOLD 2", "임시!! GOLD 2");
+        TeamAssignResponseDTO result = new TeamAssignResponseDTO(finalTeam1List, finalTeam2List, team1AvgMmrToString, team2AvgMmrToString);
         return result;
     }
 

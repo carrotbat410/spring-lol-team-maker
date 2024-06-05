@@ -5,14 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class TeamAssignRequestDTO {
 
-    private TeamAssignMode assingMode; //TODO ENUM 타입으로?
+    private TeamAssignMode assingMode;
 
-    private SummonerDTO[] team1List;
-    private SummonerDTO[] team2List;
-    private SummonerDTO[] noTeamList;
+    private List<SummonerDTO> team1List;
+    private List<SummonerDTO> team2List;
+    private List<SummonerDTO> noTeamList;
 
 }
