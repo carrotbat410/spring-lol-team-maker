@@ -18,8 +18,8 @@ public class TeamService {
 
     public TeamAssignResponseDTO makeResultWithRandomMode(TeamAssignRequestDTO requestDTO) {
         //* Request Response 의 타입을 인터페이스인 List로 선언하니 훨 나은듯
-        ArrayList<SummonerDTO> finalTeam1List = (ArrayList<SummonerDTO>) requestDTO.getTeam1List();
-        ArrayList<SummonerDTO> finalTeam2List = (ArrayList<SummonerDTO>) requestDTO.getTeam2List();
+        ArrayList<SummonerDTO> team1List = (ArrayList<SummonerDTO>) requestDTO.getTeam1List();
+        ArrayList<SummonerDTO> team2List = (ArrayList<SummonerDTO>) requestDTO.getTeam2List();
         ArrayList<SummonerDTO> noTeamList = (ArrayList<SummonerDTO>) requestDTO.getNoTeamList();
 
         //#1. 인덱스 0 ~ noTeamList.size() 사이 숫자에서 requiredTeam1Cnt개 뽑기.
@@ -28,24 +28,24 @@ public class TeamService {
 
         //#2. noTeamList -> team1으로 옮기기
         for (Integer selectedNumber : selectedNumbers) {
-            finalTeam1List.add(noTeamList.get(selectedNumber));
+            team1List.add(noTeamList.get(selectedNumber));
             noTeamList.remove(selectedNumber);
         }
 
         //#3. noTeamList에 남아있는 나머지 전부 -> team2로 옮기기
-        for (SummonerDTO summonerDTO : noTeamList) finalTeam2List.add(summonerDTO);
+        for (SummonerDTO summonerDTO : noTeamList) team2List.add(summonerDTO);
 
         //#4. 각 팀의 평균 mmr 구해서 String으로 반환하기
         int team1AvgMmrSum = 0;
         int team2AvgMmrSum = 0;
-        for (SummonerDTO summonerDTO : finalTeam1List) team1AvgMmrSum += summonerDTO.getMmr();
-        for (SummonerDTO summonerDTO : finalTeam2List) team2AvgMmrSum += summonerDTO.getMmr();
+        for (SummonerDTO summonerDTO : team1List) team1AvgMmrSum += summonerDTO.getMmr();
+        for (SummonerDTO summonerDTO : team2List) team2AvgMmrSum += summonerDTO.getMmr();
         Integer team1AvgMmr = Math.round(team1AvgMmrSum / 5);
         Integer team2AvgMmr = Math.round(team2AvgMmrSum / 5);
         String team1AvgMmrToString = riotUtils.mmrToString(team1AvgMmr);
         String team2AvgMmrToString = riotUtils.mmrToString(team2AvgMmr);
 
-        TeamAssignResponseDTO result = new TeamAssignResponseDTO(finalTeam1List, finalTeam2List, team1AvgMmrToString, team2AvgMmrToString);
+        TeamAssignResponseDTO result = new TeamAssignResponseDTO(team1List, team2List, team1AvgMmrToString, team2AvgMmrToString);
         return result;
     }
 
