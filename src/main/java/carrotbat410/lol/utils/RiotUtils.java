@@ -139,6 +139,24 @@ public class RiotUtils {
         return null;
     }
 
+    public String mmrToString(int mmr) {
+        if(mmr == 0) return "UNRANKED";
+        if(mmr == 29) return "MASTER";
+        if(mmr == 30) return "GRANDMASTER";
+        if(mmr == 31) return "CHALLENGER";
+
+        String[] tiers = {"IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND"};
+        String[] divisions = {"IV", "III", "II", "I"};
+
+        if (mmr >= 1 && mmr <= 28) {
+            int tierIndex = (mmr - 1) / 4;
+            int divisionIndex = (mmr - 1) % 4;
+            return tiers[tierIndex] + " " + divisions[divisionIndex];
+        }
+
+        return "NEW TIER";
+    }
+
     private Integer CalculatMmr(String tier, Integer rank) {
         if(tier.equals("UNRANKED")) return 0;
         if(tier.equals("MASTER")) return 29;
