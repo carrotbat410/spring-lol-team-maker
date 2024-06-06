@@ -36,12 +36,12 @@ public class TeamService {
         for (SummonerDTO summonerDTO : noTeamList) team2List.add(summonerDTO);
 
         //#4. 각 팀의 평균 mmr 구해서 String으로 반환하기
-        int team1AvgMmrSum = 0;
-        int team2AvgMmrSum = 0;
-        for (SummonerDTO summonerDTO : team1List) team1AvgMmrSum += summonerDTO.getMmr();
-        for (SummonerDTO summonerDTO : team2List) team2AvgMmrSum += summonerDTO.getMmr();
-        Integer team1AvgMmr = Math.round(team1AvgMmrSum / 5);
-        Integer team2AvgMmr = Math.round(team2AvgMmrSum / 5);
+        int team1MmrSum = 0;
+        int team2MmrSum = 0;
+        for (SummonerDTO summonerDTO : team1List) team1MmrSum += summonerDTO.getMmr();
+        for (SummonerDTO summonerDTO : team2List) team2MmrSum += summonerDTO.getMmr();
+        Integer team1AvgMmr = Math.round(team1MmrSum / 5);
+        Integer team2AvgMmr = Math.round(team2MmrSum / 5);
         String team1AvgMmrToString = riotUtils.mmrToString(team1AvgMmr);
         String team2AvgMmrToString = riotUtils.mmrToString(team2AvgMmr);
 
