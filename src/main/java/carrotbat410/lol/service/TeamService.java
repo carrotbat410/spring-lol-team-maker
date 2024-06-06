@@ -122,7 +122,7 @@ class GoldenBalanceUtils {
         DFS(0, 0, initTeam1MmrSum);
     }
 
-    public void DFS(int L, int s, int tmpTeam1MmrSum) {
+    private void DFS(int L, int s, int tmpTeam1MmrSum) {
         if(L == r) {
             int tmpTeam2MmrSum = totalMmrSum - tmpTeam1MmrSum;
             int tmpMmrDiif = Math.abs(tmpTeam1MmrSum - tmpTeam2MmrSum);
@@ -134,10 +134,10 @@ class GoldenBalanceUtils {
                 List<SummonerDTO> newBestTeam1List = new ArrayList<>(team1List);
                 for (Integer i : selectedTeam1IdxList) {
                     newBestTeam1List.add(clonedNoTeamList.get(i));
-                    clonedNoTeamList.remove(i);
+                    clonedNoTeamList.remove(clonedNoTeamList.get(i));
                 }
                 List<SummonerDTO> newBestTeam2List = new ArrayList<>(team2List);
-                newBestTeam2List.addAll(noTeamList);
+                newBestTeam2List.addAll(clonedNoTeamList);
 
                 //#3. 필드 값 바꾸기
                 mmrDiff = tmpMmrDiif;
