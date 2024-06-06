@@ -59,7 +59,7 @@ public class TeamService {
         ArrayList<SummonerDTO> noTeamList = (ArrayList<SummonerDTO>) requestDTO.getNoTeamList();
 
         GoldenBalanceUtils result = new GoldenBalanceUtils(team1List, team2List, noTeamList);
-        return new TeamAssignResponseDTO(result.bestTeam1, result.bestTeam2, riotUtils.mmrToString(result.bestTeam1AvgMmr), riotUtils.mmrToString(result.bestTeam2AvgMmr));
+        return new TeamAssignResponseDTO(result.bestTeam1List, result.bestTeam2List, riotUtils.mmrToString(result.bestTeam1AvgMmr), riotUtils.mmrToString(result.bestTeam2AvgMmr));
     }
 
     public static List<Integer> selectNumbers(int n, int m) {
@@ -83,8 +83,8 @@ class GoldenBalanceUtils {
     private List<SummonerDTO> team1List;
     private List<SummonerDTO> team2List;
     private List<SummonerDTO> noTeamList;
-    public List<SummonerDTO> bestTeam1;
-    public List<SummonerDTO> bestTeam2;
+    public List<SummonerDTO> bestTeam1List;
+    public List<SummonerDTO> bestTeam2List;
     public int bestTeam1MmrSum, bestTeam2MmrSum;
     public int bestTeam1AvgMmr, bestTeam2AvgMmr;
     public int totalMmrSum;
@@ -100,15 +100,15 @@ class GoldenBalanceUtils {
         this.team1List = team1List;
         this.team2List = team2List;
         this.noTeamList = noTeamList;
-        this.bestTeam1 = new ArrayList<>();
-        this.bestTeam2 = new ArrayList<>();
+        this.bestTeam1List = new ArrayList<>();
+        this.bestTeam2List = new ArrayList<>();
         for (int i = 0; i < team1List.size(); i++) {
-            bestTeam1.add(team1List.get(i));
+            bestTeam1List.add(team1List.get(i));
             bestTeam1MmrSum += team1List.get(i).getMmr();
             totalMmrSum += team1List.get(i).getMmr();
         }
         for (int i = 0; i < team2List.size(); i++) {
-            bestTeam2.add(team2List.get(i));
+            bestTeam2List.add(team2List.get(i));
             bestTeam2MmrSum += team2List.get(i).getMmr();
             totalMmrSum += team2List.get(i).getMmr();
         }
@@ -143,8 +143,8 @@ class GoldenBalanceUtils {
                 mmrDiff = tmpMmrDiif;
                 bestTeam1MmrSum = tmpTeam1MmrSum;
                 bestTeam2MmrSum = tmpTeam2MmrSum;
-                bestTeam1 = newBestTeam1List;
-                bestTeam2 = newBestTeam2List;
+                bestTeam1List = newBestTeam1List;
+                bestTeam2List = newBestTeam2List;
             }
         }else {
             for(int i = s; i < n; i++) {
