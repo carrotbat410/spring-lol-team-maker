@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO 환경변수값 가져오질 못해서 @Value사용함.(@Value사용하려면 스프링 빈으로 관리되어야해서 @Component사용한거.)
 //TODO @Component vs static 유틸 클래스는 어떤게 더 나은지 찾아보기
 @Component
 public class RiotUtils {
