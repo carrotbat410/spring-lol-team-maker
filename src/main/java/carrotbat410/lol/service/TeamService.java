@@ -136,19 +136,26 @@ class GoldenBalanceUtils {
             int tmpTeam2MmrSum = totalMmrSum - tmpTeam1MmrSum;
             int tmpMmrDiif = Math.abs(tmpTeam1MmrSum - tmpTeam2MmrSum);
 
-            //#1. mmr 차이 적은 결과 발견
+            //#1. mmr 차이 적은 결과 발견하면 결과 저장하기.
             if(tmpMmrDiif < mmrDiff) {
-                //#2. newBestTeamList 만들기
-                List<SummonerDTO> clonedNoTeamList = new ArrayList<>(noTeamList);
+
+                //#2. newBestTeam1List 만들기
                 List<SummonerDTO> newBestTeam1List = new ArrayList<>(team1List);
+                HashMap<Integer, SummonerDTO> clonedNoTeamList = new HashMap<>();
+                for(int i = 0; i < n; i++) clonedNoTeamList.put(i, noTeamList.get(i));
+
                 for (Integer i : selectedTeam1IdxList) {
                     newBestTeam1List.add(clonedNoTeamList.get(i));
-                    clonedNoTeamList.remove(clonedNoTeamList.get(i));
+                    clonedNoTeamList.remove(i);
                 }
-                List<SummonerDTO> newBestTeam2List = new ArrayList<>(team2List);
-                newBestTeam2List.addAll(clonedNoTeamList);
 
-                //#3. 필드 값 바꾸기
+                //#2. newBestTeam2List 만들기
+                List<SummonerDTO> newBestTeam2List = new ArrayList<>(team2List);
+                for (SummonerDTO summonerDTO : clonedNoTeamList.values()) {
+                    newBestTeam2List.add(summonerDTO);
+                }
+
+                //#3. 필드에 현재값으로 저장하기
                 mmrDiff = tmpMmrDiif;
                 bestTeam1MmrSum = tmpTeam1MmrSum;
                 bestTeam2MmrSum = tmpTeam2MmrSum;
@@ -227,6 +234,7 @@ class BalanceUtils {
                 newBestTeam2List.add(summonerDTO);
             }
 
+            //#3. BestTeamResult[]에 결과 저장하기
             BestTeamResult newResult = new BestTeamResult(newBestTeam1List, newBestTeam2List, Math.round(tmpTeam1MmrSum / 5), Math.round(tmpTeam2MmrSum / 5), tmpMmrDiif);
             results.add(newResult);
 
