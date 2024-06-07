@@ -106,6 +106,7 @@ class GoldenBalanceUtils {
         //#1. 모든값 초기화
         this.team1List = team1List;
         this.team2List = team2List;
+        Collections.shuffle(noTeamList); //한번 섞어서 넣기
         this.noTeamList = noTeamList;
         this.bestTeam1List = new ArrayList<>();
         this.bestTeam2List = new ArrayList<>();
@@ -179,9 +180,9 @@ class BalanceUtils {
     public int totalMmrSum;
     private int n;
     private int r;
-    private int maxResultCnt = 7; //! 결과 시드 갯수
+    private int maxResultCnt = 8; //! 결과 시드 갯수(너무 늘리면, 밸붕결과도 포함할 수 있음)
     private Integer[] selectedTeam1IdxList;
-    private List<BestTeamResult> results;
+    private List<BestTeamResult> results = new ArrayList<>();
 
     public BalanceUtils(
             List<SummonerDTO> team1List, List<SummonerDTO> team2List, List<SummonerDTO> noTeamList
@@ -189,6 +190,7 @@ class BalanceUtils {
         //#1. 모든값 초기화
         this.team1List = team1List;
         this.team2List = team2List;
+        Collections.shuffle(noTeamList); //한번 섞어서 넣기
         this.noTeamList = noTeamList;
 
         for (int i = 0; i < team1List.size(); i++) totalMmrSum += team1List.get(i).getMmr();
