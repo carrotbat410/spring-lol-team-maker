@@ -54,6 +54,7 @@ public class TeamService {
         ArrayList<SummonerDTO> team1List = (ArrayList<SummonerDTO>) requestDTO.getTeam1List();
         ArrayList<SummonerDTO> team2List = (ArrayList<SummonerDTO>) requestDTO.getTeam2List();
         ArrayList<SummonerDTO> noTeamList = (ArrayList<SummonerDTO>) requestDTO.getNoTeamList();
+
         BalanceUtils balanceUtils = new BalanceUtils(team1List, team2List, noTeamList);
         BestTeamResult result = balanceUtils.getResultOne();
         return new TeamAssignResponseDTO(result.bestTeam1List, result.bestTeam2List, riotUtils.mmrToString(result.bestTeam1AvgMmr), riotUtils.mmrToString(result.bestTeam2AvgMmr));
@@ -126,6 +127,8 @@ class GoldenBalanceUtils {
         int initTeam1MmrSum = 0;
         for (SummonerDTO team1Member : team1List) initTeam1MmrSum += team1Member.getMmr();
         DFS(0, 0, initTeam1MmrSum);
+        bestTeam1AvgMmr = Math.round(bestTeam1MmrSum / 5);
+        bestTeam2AvgMmr = Math.round(bestTeam2MmrSum / 5);
     }
 
     private void DFS(int L, int s, int tmpTeam1MmrSum) {
