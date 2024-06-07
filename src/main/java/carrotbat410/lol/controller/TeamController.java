@@ -37,7 +37,7 @@ public class TeamController {
         TeamAssignResponseDTO result;
 
         if(requestDTO.getAssingMode() == RANDOM) result = teamService.makeResultWithRandomMode(requestDTO);
-//        else if(requestDTO.getAssingMode() == BALANCE) result = teamService.makeResultWithBalanceMode(requestDTO);
+        else if(requestDTO.getAssingMode() == BALANCE) result = teamService.makeResultWithBalanceMode(requestDTO);
         else if(requestDTO.getAssingMode() == GOLDEN_BALANCE) result = teamService.makeResultWithGoldenBalanceMode(requestDTO);
         else throw new IllegalArgumentException("제공하지 않는 모드입니다.");
 
