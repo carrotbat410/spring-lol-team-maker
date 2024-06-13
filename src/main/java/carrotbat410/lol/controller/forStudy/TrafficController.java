@@ -1,4 +1,4 @@
-//package carrotbat410.lol.controller;
+//package carrotbat410.lol.controller.forStudy;
 //
 //
 //import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//! (지표 확인용)트래픽 유발 컨트롤러
+////! (지표 확인용)트래픽 유발 컨트롤러
 //@RestController
 //@Slf4j
 //@RequestMapping("/traffic")
