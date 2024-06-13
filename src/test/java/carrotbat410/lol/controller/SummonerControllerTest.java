@@ -52,7 +52,6 @@ public class SummonerControllerTest {
         SummonerDTO summoner2 = createSummonerDTO(2L, "summoner2", "KR1");
 
         List<SummonerDTO> summoners = Arrays.asList(summoner1, summoner2);
-        Pageable pageable = PageRequest.of(0, 30);
 
         // stubbing
         //! Stubbing 인자가 완전 일치해야함.
@@ -61,6 +60,7 @@ public class SummonerControllerTest {
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.get("/summoners")
+//*                        .queryParam("size", "1") 필요하다면 queryParam 사용 가능
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andDo(MockMvcResultHandlers.print())
