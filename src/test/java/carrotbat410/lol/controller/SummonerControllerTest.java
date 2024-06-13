@@ -120,7 +120,7 @@ public class SummonerControllerTest {
     void addSummonerWithLongerTagLine() throws Exception{
         // given
         AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
-        request.setSummonerName("E크에크파이크");
+        request.setSummonerName("summoner1");
         request.setTagLine("1234567890123456789012345678901");//length:31
 
         // when // then
@@ -141,12 +141,12 @@ public class SummonerControllerTest {
     void addSummonerWithoutTagLine() throws Exception{
         // given
         AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
-        request.setSummonerName("E크에크파이크");
+        request.setSummonerName("summoner1");
         request.setTagLine("");
 
         // stubbing: SummonerService의 addSummoner 메서드가 호출되었을 때 반환할 값 설정
-        SummonerDTO mockSummonerDTO = createSummonerDTO(1L, "E크에크파이크", "KR1");
-        when(summonerService.addSummoner(1L, "E크에크파이크", "KR1")).thenReturn(mockSummonerDTO);
+        SummonerDTO mockSummonerDTO = createSummonerDTO(1L, "summoner1", "KR1");
+        when(summonerService.addSummoner(1L, "summoner1", "KR1")).thenReturn(mockSummonerDTO);
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
@@ -163,7 +163,7 @@ public class SummonerControllerTest {
     void addSummoner() throws Exception{
         // given
         AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
-        request.setSummonerName("E크에크파이크");
+        request.setSummonerName("summoner1");
         request.setTagLine("KR1");
 
         // when // then
@@ -176,6 +176,45 @@ public class SummonerControllerTest {
                 .andExpect(status().isOk());
 
 
+    }
+
+    @Test
+    @DisplayName("소환사 정보를 갱신할 수 있다.")
+    void updateSummoner() throws Exception {
+        // given
+        Long summonerId = 1L;
+        String summonerName = "summoner1";
+        String tagLine = "KR1";
+
+        // stubbing
+        SummonerDTO mockSummonerDTO = createSummonerDTO(summonerId, summonerName, tagLine);
+        when(summonerService.updateSummoner(summonerId)).thenReturn(mockSummonerDTO);
+
+        // when  // then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/summoner/{summonerId}", summonerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("ok"))
+                .andExpect(jsonPath("$.data.id").value(summonerId));
+    }
+
+    @Test
+    @DisplayName("소환사를 삭제할 수 있다.")
+    void deleteSummoner() throws Exception {
+        // given
+        Long summonerId = 1L;
+
+        // when  // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/summoner/{summonerId}", summonerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("ok"));
     }
 
     private static SummonerDTO createSummonerDTO(Long id, String summonerName, String tagLine) {
