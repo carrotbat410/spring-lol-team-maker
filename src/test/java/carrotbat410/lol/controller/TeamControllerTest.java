@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static carrotbat410.lol.dto.team.TeamAssignMode.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -126,6 +127,32 @@ class TeamControllerTest {
                 .andExpect(jsonPath("$.message").value("각 팀 최대 인원은 5명입니다."));
     }
 
+    @Test
+    @DisplayName("팀 생성 요청이 유효한 경우 성공적으로 팀을 생성한다.")
+    void makeTeamResult() throws Exception {
+        // given
+        SummonerDTO summoner9 = createSummonerDTO(9L, "summoner9");
+        SummonerDTO summoner10 = createSummonerDTO(10L, "summoner10");
+        team1List.add(summoner9);
+        team2List.add(summoner10);
+
+        TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
+        TeamAssignResponseDTO responseDTO = new TeamAssignResponseDTO(team1List, team2List, "GOLD I", "GOLD I");
+        when(teamService.makeResultWithRandomMode(any())).thenReturn(responseDTO);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.post("/team")
+                        .content(objectMapper.writeValueAsString(requestDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.team1List").isArray())
+                .andExpect(jsonPath("$.data.team2List").isArray())
+                .andExpect(jsonPath("$.data.team1List.length()").value(team1List.size()))
+                .andExpect(jsonPath("$.data.team2List.length()").value(team2List.size()));
+    }
 
 
     private static SummonerDTO createSummonerDTO(Long id, String summonerName) {
