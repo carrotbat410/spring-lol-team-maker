@@ -48,7 +48,7 @@ public class SummonerControllerTest {
     void getSummoners() throws Exception {
         // given
         SummonerDTO summoner1 = createSummonerDTO(1L, "summoner1", "KR1");
-        SummonerDTO summoner2 = createSummonerDTO(1L, "summoner2", "KR1");
+        SummonerDTO summoner2 = createSummonerDTO(2L, "summoner2", "KR1");
 
         List<SummonerDTO> summoners = Arrays.asList(summoner1, summoner2);
         Pageable pageable = PageRequest.of(0, 30);
