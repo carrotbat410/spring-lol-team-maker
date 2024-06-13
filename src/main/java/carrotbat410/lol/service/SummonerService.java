@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 //TODO 성능 체크부터 하고, Transactional 리팩토링하자
+//TODO 근데 짜피 나중에 서비스에 텔레그램 전송 로직 붙일건데, 나머지도 다 영향받는거 아닌가?? 이런 문제떄문에 AOP사용하는건가?
 @Service
 @RequiredArgsConstructor
 @Transactional //! transactional 추가해야 updateSummoner 적용됨. 원인 정확히 알아보기 (추측: 영속성 컨텍스트 생명주기가 tx와 같아서?) //TODO 외부 API요청 로직떄문에 가능하다면 trx안붙이는게 성능상 유리하지 않을까?
