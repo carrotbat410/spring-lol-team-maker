@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,7 +54,10 @@ public class SummonerControllerTest {
         List<SummonerDTO> summoners = Arrays.asList(summoner1, summoner2);
         Pageable pageable = PageRequest.of(0, 30);
 
-        when(summonerService.getSummoners(1L, pageable)).thenReturn(summoners);
+        // stubbing
+        //! Stubbing 인자가 완전 일치해야함.
+        //* 완전일치하기 어려울떄 any()사용하기. any(Long.class)처럼 타입 명시해서 좀 더 타입을 제한할 수 있음
+        when(summonerService.getSummoners(any(Long.class), any(Pageable.class))).thenReturn(summoners);
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.get("/summoners")
@@ -62,8 +66,8 @@ public class SummonerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("ok"))
-                .andExpect(jsonPath("$.data").isArray());
-//                .andExpect(jsonPath("$.data.length()").value(summoners.size())); //TODO 이거 처리 어떻게 해야하지? 여기서 하는게 맞나?
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(summoners.size()));
 
 
         //* 아래 부분은 서비스 레이어에서 검증할 부분이기 떄문에, 여기서 검증할 필요 X.
