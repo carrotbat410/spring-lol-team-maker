@@ -51,12 +51,7 @@ public class SummonerController {
         if(StringUtils.isBlank(tagLine)) tagLine = "KR1";
 
         SummonerDTO addedSummoner = summonerService.addSummoner(userId, summonerName, tagLine);
-//        SummonerDTO addedSummoner = summonerService.addSummoner(userId, "통티모바베큐", "KR1"); // 솔랭 팀랭 모두 언랭인경우
-//        SummonerDTO addedSummoner1 = summonerService.addSummoner(userId, "E크에크파이크", "KR1"); // 솔랭
-//        SummonerDTO addedSummoner2 = summonerService.addSummoner(userId, "cikcik", "KR1"); // 솔랭 (챌린저)
-//        SummonerDTO addedSummoner3 = summonerService.addSummoner(userId, "범코야끼", "KR1"); // 솔랭 (그마)
-//        SummonerDTO addedSummoner4 = summonerService.addSummoner(userId, "근성맨", "KR1"); // 솔랭 (마스터)
-//        SummonerDTO addedSummoner5 = summonerService.addSummoner(userId, "오잉앵", "KR1"); // 솔랭, 팀랭
+
         return new SuccessResult<>("ok", addedSummoner);
     }
 
