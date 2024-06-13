@@ -43,9 +43,6 @@ public class SummonerController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = extractUserIdFromAuthentication(authentication);
 
-        int addedSummonerCnt = summonerService.getAddedSummonerCnt(userId);
-        if(addedSummonerCnt >= 30) throw new DataConflictException("추가할 수 있는 최대 인원은 30명입니다.");
-
         String summonerName = addSummonerReqeustDTO.getSummonerName();
         String tagLine = addSummonerReqeustDTO.getTagLine();
         if(StringUtils.isBlank(tagLine)) tagLine = "KR1";
