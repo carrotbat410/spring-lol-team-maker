@@ -51,8 +51,6 @@ public class SummonerControllerTest {
                         .with(csrf())
                 )
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("Length"))
                 .andExpect(jsonPath("$.message").value("올바르지 않은 소환사이름 양식입니다."))
