@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
@@ -52,6 +53,10 @@ public class SummonerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("Length"))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 소환사이름 양식입니다."))
+                .andExpect(jsonPath("$.fieldName").value("summonerName"));
     }
 
 //    @Test
@@ -87,7 +92,7 @@ public class SummonerControllerTest {
                         .with(csrf())
                 )
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
 
 
     }
