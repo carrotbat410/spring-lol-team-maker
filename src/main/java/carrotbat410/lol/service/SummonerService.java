@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional //! transactional 추가해야 updateSummoner 적용됨. 원인 정확히 알아보기 (추측: 영속성 컨텍스트 생명주기가 tx와 같아서?)
+@Transactional //! transactional 추가해야 updateSummoner 적용됨. 원인 정확히 알아보기 (추측: 영속성 컨텍스트 생명주기가 tx와 같아서?) //TODO 외부 API요청 로직떄문에 가능하다면 trx안붙이는게 성능상 유리하지 않을까?
 public class SummonerService {
     private final SummonerRepository summonerRepository;
     private final RiotUtils riotUtils;
