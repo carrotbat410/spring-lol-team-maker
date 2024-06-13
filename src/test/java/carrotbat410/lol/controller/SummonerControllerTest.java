@@ -36,18 +36,16 @@ public class SummonerControllerTest {
     private SummonerService summonerService;
 
     @Test
-    @DisplayName("소환사를 추가할 떄 소환사명은 필수이다.")
+    @DisplayName("소환사를 추가할 떄 소환사명은 필수값이다.")
     void addSummonerWithoutSummonerName() throws Exception{
         // given
         AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
         request.setSummonerName("");
         request.setTagLine("KR1");
 
-        String body = objectMapper.writeValueAsString(request);
-
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
-                        .content(body)
+                        .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                 )
@@ -55,6 +53,24 @@ public class SummonerControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
+
+//    @Test
+//    @DisplayName("소환사를 추가할 떄 태그라인이 없으면 KR1이 기본값으로 들어간다.")
+//    void addSummonerWithoutTagLine() throws Exception{
+//        // given
+//        AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
+//        request.setSummonerName("E크에크파이크");
+//        request.setTagLine("");
+//
+//        // when // then
+//        mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
+//                        .content(objectMapper.writeValueAsString(request))
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
+//                )
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isOk());
+//    }
 
     @Test
     @DisplayName("소환사를 성공적으로 추가하면 상태코드 200을 반환한다.")
@@ -64,11 +80,9 @@ public class SummonerControllerTest {
         request.setSummonerName("E크에크파이크");
         request.setTagLine("KR1");
 
-        String body = objectMapper.writeValueAsString(request);
-
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
-                        .content(body)
+                        .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                 )
