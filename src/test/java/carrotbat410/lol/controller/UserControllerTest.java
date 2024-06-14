@@ -31,6 +31,8 @@ class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    //TODO 로그인 테스트 코드 작성하기
+
     @Test
     @DisplayName("username이 null이면 예외를 던진다.")
     void joinWithEmptyUsername() throws Exception {
