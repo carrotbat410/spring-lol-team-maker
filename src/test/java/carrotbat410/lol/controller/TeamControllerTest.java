@@ -29,6 +29,7 @@ import static carrotbat410.lol.dto.team.TeamAssignMode.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,7 +76,7 @@ class TeamControllerTest {
         TeamAssignRequestDTO request = new TeamAssignRequestDTO(RANDOM, team1List, team1List, team1List);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        mockMvc.perform(post("/team")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -96,7 +97,7 @@ class TeamControllerTest {
         TeamAssignRequestDTO request = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        mockMvc.perform(post("/team")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -117,7 +118,7 @@ class TeamControllerTest {
         TeamAssignRequestDTO request = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        mockMvc.perform(post("/team")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
@@ -141,7 +142,7 @@ class TeamControllerTest {
         when(teamService.makeResultWithRandomMode(any())).thenReturn(responseDTO);
 
         // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/team")
+        mockMvc.perform(post("/team")
                         .content(objectMapper.writeValueAsString(requestDTO))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
