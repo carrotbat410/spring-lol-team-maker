@@ -2,6 +2,7 @@ package carrotbat410.lol.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -10,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 //@RequestBody->DTO mapping떄 Setter필요함.
 @Setter
 @Getter
+@AllArgsConstructor
 public class JoinDTO {
 
     @NotBlank(message = "아이디를 입력해주세요.")
