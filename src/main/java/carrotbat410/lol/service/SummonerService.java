@@ -33,7 +33,7 @@ public class SummonerService {
         if(existingAddedSummoner != null) throw new DataConflictException("이미 존재하는 유저입니다.");
 
         int addedSummonerCnt = getAddedSummonerCnt(userId);
-        if(addedSummonerCnt >= 30) throw new DataConflictException("추가할 수 있는 최대 인원은 30명입니다.");
+        if(addedSummonerCnt >= 30) throw new DataConflictException("추가할 수 있는 최대 인원은 30명입니다."); //TODO 429 반환하도록 하는게 나을거 같음.
 
         SummonerApiTotalDTO apiResult = riotUtils.getSummoner(summonerName, tagLine);
 
