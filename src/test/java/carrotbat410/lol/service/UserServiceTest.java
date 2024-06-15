@@ -36,37 +36,6 @@ class UserServiceTest {
     private SummonerService summonerService;
 
 
-//    @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
-//    @Test
-//    void createOrder() {
-//        // given
-//        LocalDateTime registeredDateTime = LocalDateTime.now();
-//
-//        Product product1 = createProduct(HANDMADE, "001", 1000);
-//        Product product2 = createProduct(HANDMADE, "002", 3000);
-//        Product product3 = createProduct(HANDMADE, "003", 5000);
-//        productRepository.saveAll(List.of(product1, product2, product3));
-//
-//        OrderCreateRequest request = OrderCreateRequest.builder()
-//                .productNumbers(List.of("001", "002"))
-//                .build();
-//
-//        // when
-//        OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
-//
-//        // then
-//        assertThat(orderResponse.getId()).isNotNull();
-//        assertThat(orderResponse)
-//                .extracting("registeredDateTime", "totalPrice")
-//                .contains(registeredDateTime, 4000);
-//        assertThat(orderResponse.getProducts()).hasSize(2)
-//                .extracting("productNumber", "price")
-//                .containsExactlyInAnyOrder(
-//                        tuple("001", 1000),
-//                        tuple("002", 3000)
-//                );
-//    }
-
     @DisplayName("이미 존재하는 username으로 회원 가입 시도 시 예외가 발생한다.")
     @Test
     void joinProcessWithDuplicateUser() {
