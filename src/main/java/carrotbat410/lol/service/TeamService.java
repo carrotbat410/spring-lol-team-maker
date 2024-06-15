@@ -30,7 +30,7 @@ public class TeamService {
         //#2. noTeamList -> team1으로 옮기기
         for (Integer selectedNumber : selectedNumbers) {
             team1List.add(noTeamList.get(selectedNumber));
-            noTeamList.remove(selectedNumber);
+            noTeamList.remove(noTeamList.get(selectedNumber));
         }
 
         //#3. noTeamList에 남아있는 나머지 전부 -> team2로 옮기기
