@@ -77,7 +77,7 @@ class TeamServiceTest {
         TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(BALANCE, team1List, team2List, noTeamList);
 
         // when
-        TeamAssignResponseDTO response = teamService.makeResultWithGoldenBalanceMode(requestDTO);
+        TeamAssignResponseDTO response = teamService.makeResultWithBalanceMode(requestDTO);
 
         // then
         assertThat(response.getTeam1List()).hasSize(5)
