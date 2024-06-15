@@ -177,4 +177,34 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("ok"));
     }
+
+    //TODO ClassCastException 해결하기: extractUserIdFromAuthentication 메서드 내의 (CustomUserDetails) 캐스팅에서 에러남.
+//    @Test
+//    @DisplayName("회원 탈퇴할 수 있다.")
+//    void deleteUserSuccess() throws Exception {
+//        // given
+//        Authentication authentication = Mockito.mock(Authentication.class);
+//
+//        UserTokenDTO userTokenDTO = new UserTokenDTO(1L, "test123", "asd123", "USER_ROLE");
+//        CustomUserDetails userDetails = new CustomUserDetails(userTokenDTO);
+//
+//        // authentication.getPrincipal()이 userDetails를 반환하도록 설정
+//        when(authentication.getPrincipal()).thenReturn(userDetails);
+//
+//        // SecurityContext를 mock으로 설정하고 authentication을 반환하도록 설정
+//        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+//        when(securityContext.getAuthentication()).thenReturn(authentication);
+//        SecurityContextHolder.setContext(securityContext);
+//
+//        // when // then
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
+//                )
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.message").value("ok"));
+//
+//    }
+
 }
