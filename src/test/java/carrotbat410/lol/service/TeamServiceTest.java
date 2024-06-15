@@ -111,7 +111,7 @@ class TeamServiceTest {
 
         assertThat(response.getTeam2List()).hasSize(5)
                 .extracting("summonerName")
-                .containsExactlyInAnyOrder("summoner5", "summoner6", "summoner7", "worstSummoner", "bestSummoner")
+                .containsExactlyInAnyOrder("summoner5", "summoner6", "summoner7", "worstSummoner", "bestSummoner");
 
         assertThat(response.getTeam1AvgMmr()).isEqualTo("EMERALD III");
         assertThat(response.getTeam2AvgMmr()).isEqualTo("EMERALD III");
