@@ -1,10 +1,8 @@
 package carrotbat410.lol.service;
 
 import carrotbat410.lol.dto.summoner.SummonerDTO;
-import carrotbat410.lol.dto.team.TeamAssignMode;
 import carrotbat410.lol.dto.team.TeamAssignRequestDTO;
 import carrotbat410.lol.dto.team.TeamAssignResponseDTO;
-import carrotbat410.lol.utils.RiotUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static carrotbat410.lol.dto.team.TeamAssignMode.*;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -53,7 +52,7 @@ class TeamServiceTest {
         SummonerDTO summoner10 = createSummonerDTO(10L, "summoner10");
         noTeamList.addAll(List.of(summoner8, summoner9, summoner10));
 
-        TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(TeamAssignMode.RANDOM, team1List, team2List, noTeamList);
+        TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
 
         // when
         TeamAssignResponseDTO response = teamService.makeResultWithRandomMode(requestDTO);
@@ -65,7 +64,64 @@ class TeamServiceTest {
         assertThat(response.getTeam2AvgMmr()).isEqualTo("EMERALD III");
     }
 
+    @Test
+    @DisplayName("[BalanceMode]팀짜기의 결과로 각 팀의 인원은 5명이 되어야 한다.")
+    void makeResultWithBalanceMode() throws Exception {
+        // given
+        //* (worstSummonerMmr + bestSummonerMmr) / 2 = 22 를 만족하도록 mmr설정함.
+        SummonerDTO worstSummoner = createSummonerDTO(8L, "worstSummoner", 16);
+        SummonerDTO commonSummoner = createSummonerDTO(9L, "commonSummoner", 22);
+        SummonerDTO bestSummoner = createSummonerDTO(10L, "bestSummoner", 28);
+        noTeamList.addAll(List.of(worstSummoner, commonSummoner, bestSummoner));
+
+        TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(BALANCE, team1List, team2List, noTeamList);
+
+        // when
+        TeamAssignResponseDTO response = teamService.makeResultWithGoldenBalanceMode(requestDTO);
+
+        // then
+        assertThat(response.getTeam1List()).hasSize(5)
+                .extracting("summonerName")
+                .contains("summoner1", "summoner2", "summoner3", "summoner4");
+
+        assertThat(response.getTeam2List()).hasSize(5)
+                .extracting("summonerName")
+                .contains("summoner5", "summoner6", "summoner7");
+    }
+
+    @Test
+    @DisplayName("[GoldenBalanceMode]팀짜기의 결과로 각 팀의 인원은 5명이 되어야 한다.")
+    void makeResultWithGoldenBalanceMode() throws Exception {
+        // given
+        //* (worstSummonerMmr + bestSummonerMmr) / 2 = 22 를 만족하도록 mmr 설정함.
+        SummonerDTO worstSummoner = createSummonerDTO(8L, "worstSummoner", 16);
+        SummonerDTO commonSummoner = createSummonerDTO(9L, "commonSummoner", 22);
+        SummonerDTO bestSummoner = createSummonerDTO(10L, "bestSummoner", 28);
+        noTeamList.addAll(List.of(worstSummoner, commonSummoner, bestSummoner));
+
+        TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(GOLDEN_BALANCE, team1List, team2List, noTeamList);
+
+        // when
+        TeamAssignResponseDTO response = teamService.makeResultWithGoldenBalanceMode(requestDTO);
+
+        // then
+        assertThat(response.getTeam1List()).hasSize(5)
+                .extracting("summonerName")
+                .containsExactlyInAnyOrder("summoner1", "summoner2", "summoner3", "summoner4", "commonSummoner");
+
+        assertThat(response.getTeam2List()).hasSize(5)
+                .extracting("summonerName")
+                .containsExactlyInAnyOrder("summoner5", "summoner6", "summoner7", "worstSummoner", "bestSummoner")
+
+        assertThat(response.getTeam1AvgMmr()).isEqualTo("EMERALD III");
+        assertThat(response.getTeam2AvgMmr()).isEqualTo("EMERALD III");
+    }
+
+
     private static SummonerDTO createSummonerDTO(Long id, String summonerName) {
         return new SummonerDTO(id, summonerName, "KR1", "GOLD", 1, 22, 100, 70, 70, 123, LocalDateTime.now());
+    }
+    private static SummonerDTO createSummonerDTO(Long id, String summonerName, int mmr) {
+        return new SummonerDTO(id, summonerName, "KR1", "GOLD", 1, mmr, 100, 70, 70, 123, LocalDateTime.now());
     }
 }
