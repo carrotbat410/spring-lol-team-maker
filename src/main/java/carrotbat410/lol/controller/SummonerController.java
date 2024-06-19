@@ -6,6 +6,7 @@ import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.summoner.AddSummonerReqeustDTO;
 import carrotbat410.lol.exhandler.exception.DataConflictException;
 import carrotbat410.lol.service.SummonerService;
+import carrotbat410.lol.utils.SecurityUtils;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class SummonerController {
     public SuccessResult<List<SummonerDTO>> getSummoners(Pageable pageable) {
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = extractUserIdFromAuthentication(authentication);
+        Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
         List<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
 
@@ -41,7 +42,7 @@ public class SummonerController {
     public SuccessResult<SummonerDTO> addSummoner(@RequestBody @Validated AddSummonerReqeustDTO addSummonerReqeustDTO) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = extractUserIdFromAuthentication(authentication);
+        Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
         String summonerName = addSummonerReqeustDTO.getSummonerName();
         String tagLine = addSummonerReqeustDTO.getTagLine();
@@ -64,12 +65,5 @@ public class SummonerController {
         return new SuccessResult<>("ok");
     }
 
-
-    private Long extractUserIdFromAuthentication(Authentication authentication) {
-        // Authentication 객체에서 사용자 ID를 추출하는 로직
-        // CustomUserDetails를 사용하여 사용자 ID를 추출할 수 있음.
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getId();
-    }
 
 }
