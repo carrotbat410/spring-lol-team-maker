@@ -54,7 +54,7 @@ public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
 
         //! 여기는 페이징하지 않기 떄문에 count Query 날릴 필요 없다. (추후 게시판 기능에선 필요)
 //        long count = queryFactory
-//                .select(summoner)
+//                .select(summoner.id)
 //                .from(summoner)
 //                .where(summoner.userId.eq(userId))
 //                .fetch()
