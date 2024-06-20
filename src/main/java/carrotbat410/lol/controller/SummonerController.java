@@ -34,7 +34,7 @@ public class SummonerController {
 
         Page<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
 
-        return new SuccessResult<>("ok", summoners, summoners.getTotalElements());
+        return new SuccessResult<>("ok", summoners, summoners.getTotalElements());//TODO getTotalElements count query 최적화하기
     }
 
     @PostMapping("/summoner")

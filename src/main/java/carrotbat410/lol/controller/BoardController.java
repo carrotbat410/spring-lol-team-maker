@@ -23,15 +23,14 @@ public class BoardController {
     public SuccessResult<Page<BoardDTO>> getMyBoards(Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
-        //TODO getTotalElements count query 최적화하기
         Page<BoardDTO> boardsPage = boardService.getMyBoards(userId, pageable);
-        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());
+        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());//TODO getTotalElements count query 최적화하기
     }
 
     @GetMapping("/boards")
     public SuccessResult<Page<BoardDTO>> getAllBoards(Pageable pageable) {
         Page<BoardDTO> boardsPage = boardService.getAllBoards(pageable);
-        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());
+        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());//TODO getTotalElements count query 최적화하기
     }
 
     @PostMapping("/board")
