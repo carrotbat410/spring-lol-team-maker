@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -49,13 +51,15 @@ public class SummonerControllerTest {
         // given
         SummonerDTO summoner1 = createSummonerDTO(1L, "summoner1", "KR1");
         SummonerDTO summoner2 = createSummonerDTO(2L, "summoner2", "KR1");
+        List<SummonerDTO> content = Arrays.asList(summoner1, summoner2);
 
-        List<SummonerDTO> summoners = Arrays.asList(summoner1, summoner2);
+        PageRequest pageRequest = PageRequest.of(0, 30);
+        PageImpl<SummonerDTO> pageImpl = new PageImpl<>(content, pageRequest, 2);
 
         // stubbing
         //! Stubbing 인자가 완전 일치해야함.
         //* 완전일치하기 어려울떄 any()사용하기. any(Long.class)처럼 타입 명시해서 좀 더 타입을 제한할 수 있음
-        when(summonerService.getSummoners(any(Long.class), any(Pageable.class))).thenReturn(summoners);
+        when(summonerService.getSummoners(any(Long.class), any(Pageable.class))).thenReturn(pageImpl);
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.get("/summoners")
@@ -65,8 +69,8 @@ public class SummonerControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("ok"))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(summoners.size()));
+                .andExpect(jsonPath("$.data.content").isArray())
+                .andExpect(jsonPath("$.data.content.length()").value(2));
 
 
         //* 아래 부분은 서비스 레이어에서 검증할 부분이기 떄문에, 여기서 검증할 필요 X.

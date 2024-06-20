@@ -29,7 +29,7 @@ public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
 
 
     @Override
-    public List<SummonerDTO> findMySummoners(Long userId, Pageable pageable) {
+    public Page<SummonerDTO> findMySummoners(Long userId, Pageable pageable) {
 
         List<SummonerDTO> content = queryFactory
                 .select(new QSummonerDTO(
@@ -60,8 +60,8 @@ public class SummonerRepositoryImpl implements SummonerRepositoryCustom {
 //                .fetch()
 //                .size();
 
-//        return new PageImpl<>(content, pageable, content.size());
-        return content;
+        return new PageImpl<>(content, pageable, content.size());
+//        return content;
     }
 
     @Override

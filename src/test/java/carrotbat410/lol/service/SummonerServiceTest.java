@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -41,12 +42,12 @@ class SummonerServiceTest {
         }
 
         // when
-        List<SummonerDTO> summonersCase1 = summonerService.getSummoners(userId, null);
-        List<SummonerDTO> summonersCase2 = summonerService.getSummoners(100L, null);
+        Page<SummonerDTO> summonersCase1 = summonerService.getSummoners(userId, null);
+        Page<SummonerDTO> summonersCase2 = summonerService.getSummoners(100L, null);
 
         // then
-        Assertions.assertThat(summonersCase1).hasSize(3);
-        Assertions.assertThat(summonersCase2).isEmpty();
+        Assertions.assertThat(summonersCase1.getContent()).hasSize(3);
+        Assertions.assertThat(summonersCase2.getContent()).isEmpty();
     }
 
     @Test
@@ -108,7 +109,7 @@ class SummonerServiceTest {
         assertThat(result.getSummonerName()).isEqualTo(summonerName);
         verify(riotUtils).getSummoner(summonerName, tagLine);
 
-        List<SummonerDTO> savedSummoners = summonerRepository.findMySummoners(userId, null);
+        Page<SummonerDTO> savedSummoners = summonerRepository.findMySummoners(userId, null);
 
         Assertions.assertThat(savedSummoners)
                 .isNotNull()

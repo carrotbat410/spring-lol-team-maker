@@ -28,13 +28,13 @@ public class SummonerController {
     private final SummonerService summonerService;
 
     @GetMapping("/summoners") //! 복수 주의
-    public SuccessResult<List<SummonerDTO>> getSummoners(Pageable pageable) {
+    public SuccessResult<Page<SummonerDTO>> getSummoners(Pageable pageable) {
         
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
-        List<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
+        Page<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
 
-        return new SuccessResult<>("ok", summoners, summoners.size());
+        return new SuccessResult<>("ok", summoners, summoners.getTotalElements());
     }
 
     @PostMapping("/summoner")

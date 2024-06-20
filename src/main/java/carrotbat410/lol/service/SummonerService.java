@@ -8,6 +8,7 @@ import carrotbat410.lol.exhandler.exception.NotFoundException;
 import carrotbat410.lol.repository.SummonerRepository;
 import carrotbat410.lol.utils.RiotUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class SummonerService {
     private final SummonerRepository summonerRepository;
     private final RiotUtils riotUtils;
 
-    public List<SummonerDTO> getSummoners(Long userId, Pageable pageable) {
+    public Page<SummonerDTO> getSummoners(Long userId, Pageable pageable) {
         return summonerRepository.findMySummoners(userId, pageable);
     }
 

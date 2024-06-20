@@ -8,7 +8,7 @@ import lombok.Getter;
 public class SuccessResult <T> {
     private final String message;
     private final T data;
-    private final Integer totalCnt;
+    private final Long totalCnt;
 
     public SuccessResult() {
         this("ok");
@@ -22,7 +22,7 @@ public class SuccessResult <T> {
         this(message, data, null);
     }
 
-    public SuccessResult(String message, T data, Integer totalCnt) {
+    public SuccessResult(String message, T data, Long totalCnt) {
         this.message = message;
         this.data = data;
         this.totalCnt = totalCnt;
