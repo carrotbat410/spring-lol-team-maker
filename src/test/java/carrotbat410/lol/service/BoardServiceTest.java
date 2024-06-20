@@ -72,7 +72,7 @@ class BoardServiceTest {
         boardRepository.saveAll(List.of(board1, board2));
         // when
         PageRequest pageRequest = PageRequest.of(0, 30);
-        List<BoardDTO> allBoards = boardService.getAllBoards(pageRequest);
+        Page<BoardDTO> allBoards = boardService.getAllBoards(pageRequest);
 
         // then
         assertThat(allBoards)

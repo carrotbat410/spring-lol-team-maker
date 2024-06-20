@@ -75,10 +75,12 @@ class BoardControllerTest {
         BoardDTO boardDTO1 = new BoardDTO(1L, "title1", "content1", 1L, "user1");
         BoardDTO boardDTO2 = new BoardDTO(2L, "title2", "content2", 2L, "user2");
         BoardDTO boardDTO3 = new BoardDTO(3L, "title3", "content3", 3L, "user3");
-        List<BoardDTO> boards = List.of(boardDTO1, boardDTO2, boardDTO3);
+        List<BoardDTO> content = List.of(boardDTO1, boardDTO2, boardDTO3);
+        PageRequest pageRequest = PageRequest.of(0, 30);
+        PageImpl<BoardDTO> boardsPage = new PageImpl<>(content, pageRequest, content.size());
 
         // stubbing
-        when(boardService.getAllBoards(any())).thenReturn(boards);
+        when(boardService.getAllBoards(any())).thenReturn(boardsPage);
 
         // when // then
         mockMvc.perform(get("/boards")
@@ -86,8 +88,8 @@ class BoardControllerTest {
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(3));
+                .andExpect(jsonPath("$.data.content").isArray())
+                .andExpect(jsonPath("$.data.content.length()").value(3));
     }
 
     @Test

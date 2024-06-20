@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -42,8 +43,9 @@ class SummonerServiceTest {
         }
 
         // when
-        Page<SummonerDTO> summonersCase1 = summonerService.getSummoners(userId, null);
-        Page<SummonerDTO> summonersCase2 = summonerService.getSummoners(100L, null);
+        PageRequest pageRequest = PageRequest.of(0, 30);
+        Page<SummonerDTO> summonersCase1 = summonerService.getSummoners(userId, pageRequest);
+        Page<SummonerDTO> summonersCase2 = summonerService.getSummoners(100L, pageRequest);
 
         // then
         Assertions.assertThat(summonersCase1.getContent()).hasSize(3);
@@ -109,7 +111,7 @@ class SummonerServiceTest {
         assertThat(result.getSummonerName()).isEqualTo(summonerName);
         verify(riotUtils).getSummoner(summonerName, tagLine);
 
-        Page<SummonerDTO> savedSummoners = summonerRepository.findMySummoners(userId, null);
+        Page<SummonerDTO> savedSummoners = summonerRepository.findMySummoners(userId, PageRequest.of(0, 30));
 
         Assertions.assertThat(savedSummoners)
                 .isNotNull()
@@ -161,7 +163,7 @@ class SummonerServiceTest {
         summonerService.deleteSummoner(summoner.getId());
 
         // then
-        Assertions.assertThat(summonerRepository.findMySummoners(userId, null)).isEmpty();
+        Assertions.assertThat(summonerRepository.findMySummoners(userId, PageRequest.of(0, 30))).isEmpty();
     }
 
     private SummonerApiTotalDTO createSummonerApiTotalDTO(String summonerName, String tagLine) {

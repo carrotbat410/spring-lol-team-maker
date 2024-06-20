@@ -34,10 +34,16 @@ public class BoardService {
         ));
     }
 
-    public List<BoardDTO> getAllBoards(Pageable pageable) {
-        return boardRepository.findAll(pageable).stream()
-                .map(b -> new BoardDTO(b.getId(), b.getTitle(), b.getContent(), b.getUser().getId(), b.getUser().getUsername()))
-                .collect(Collectors.toList());
+    public Page<BoardDTO> getAllBoards(Pageable pageable) {
+        Page<Board> boardsPage = boardRepository.findAll(pageable);
+
+        return boardsPage.map(board -> new BoardDTO(
+                board.getId(),
+                board.getTitle(),
+                board.getContent(),
+                board.getUser().getId(),
+                board.getUser().getUsername()
+        ));
     }
 
     public void writeBoard(Long userId, WriteBoardRequestDTO request) {

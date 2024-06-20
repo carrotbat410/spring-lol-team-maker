@@ -29,9 +29,9 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public SuccessResult<List<BoardDTO>> getAllBoards(Pageable pageable) {
-        List<BoardDTO> boards = boardService.getAllBoards(pageable);
-        return new SuccessResult<>("ok", boards);
+    public SuccessResult<Page<BoardDTO>> getAllBoards(Pageable pageable) {
+        Page<BoardDTO> boardsPage = boardService.getAllBoards(pageable);
+        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());
     }
 
     @PostMapping("/board")
