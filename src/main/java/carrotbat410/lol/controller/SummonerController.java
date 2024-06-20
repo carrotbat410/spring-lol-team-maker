@@ -30,7 +30,6 @@ public class SummonerController {
     @GetMapping("/summoners") //! 복수 주의
     public SuccessResult<List<SummonerDTO>> getSummoners(Pageable pageable) {
         
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
         List<SummonerDTO> summoners = summonerService.getSummoners(userId, pageable);
@@ -41,7 +40,6 @@ public class SummonerController {
     @PostMapping("/summoner")
     public SuccessResult<SummonerDTO> addSummoner(@RequestBody @Validated AddSummonerReqeustDTO addSummonerReqeustDTO) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
         String summonerName = addSummonerReqeustDTO.getSummonerName();

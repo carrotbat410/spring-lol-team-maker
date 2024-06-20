@@ -35,8 +35,6 @@ public class UserController {
     @DeleteMapping("/user")
     public SuccessResult deleteUser() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         String username = SecurityUtils.getCurrentUsernameFromAuthentication();
 
         if(username.equals("test1")) throw new AccessDeniedException("test 계정은 회원 탈퇴할 수 없습니다.");
