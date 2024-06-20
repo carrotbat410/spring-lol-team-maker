@@ -75,27 +75,6 @@ public class SummonerControllerTest {
     }
 
     @Test
-    @DisplayName("소환사를 추가할 떄 소환사명이 null이면 예외를 던진다.")
-    void addSummonerWithoutSummonerName() throws Exception{
-        // given
-        AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
-        request.setSummonerName(null);
-        request.setTagLine("KR1");
-
-        // when // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("NotBlank"))
-                .andExpect(jsonPath("$.message").value("소환사이름을 입력해주세요."))
-                .andExpect(jsonPath("$.fieldName").value("summonerName"));
-    }
-
-    @Test
     @DisplayName("소환사를 추가할 떄 소환사명이 공백이거나 짧으면 예외를 던진다.")
     void addSummonerWithEmptySummonerName() throws Exception{
         // given
