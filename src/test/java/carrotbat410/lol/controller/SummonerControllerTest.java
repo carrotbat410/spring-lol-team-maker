@@ -96,23 +96,33 @@ public class SummonerControllerTest {
     }
 
     @Test
-    @DisplayName("소환사를 추가할 떄 소환사명이 공백이면 예외를 던진다.")
+    @DisplayName("소환사를 추가할 떄 소환사명이 공백이거나 짧으면 예외를 던진다.")
     void addSummonerWithEmptySummonerName() throws Exception{
         // given
-        AddSummonerReqeustDTO request = new AddSummonerReqeustDTO();
-        request.setSummonerName("");
-        request.setTagLine("KR1");
+        AddSummonerReqeustDTO request1 = new AddSummonerReqeustDTO(null, "KR1");
+        AddSummonerReqeustDTO request2 = new AddSummonerReqeustDTO("", "KR1");
 
         // when // then
         mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
-                        .content(objectMapper.writeValueAsString(request))
+                        .content(objectMapper.writeValueAsString(request1))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("NotBlank"))
+                .andExpect(jsonPath("$.code").value("NotNull"))
                 .andExpect(jsonPath("$.message").value("소환사이름을 입력해주세요."))
+                .andExpect(jsonPath("$.fieldName").value("summonerName"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/summoner")
+                        .content(objectMapper.writeValueAsString(request2))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("Length"))
+                .andExpect(jsonPath("$.message").value("올바르지 않은 소환사이름 양식입니다."))
                 .andExpect(jsonPath("$.fieldName").value("summonerName"));
     }
 
