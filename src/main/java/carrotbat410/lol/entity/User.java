@@ -18,7 +18,8 @@ public class User extends BaseEntity {
     private String password;
     private String role;
 
-    public User(String username, String password, String role) {
+    public User(Long id, String username, String password, String role) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;

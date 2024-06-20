@@ -25,7 +25,7 @@ class CustomUserDetailsServiceTest {
     @DisplayName("유저가 존재하면 UserDetails를 반환한다")
     void loadUserByUsername() throws Exception {
         // given
-        User newUser = new User("test123", "asd123", "ROLE_USER");
+        User newUser = new User(null, "test123", "asd123", "ROLE_USER");
         userRepository.save(newUser);
 
         // when
