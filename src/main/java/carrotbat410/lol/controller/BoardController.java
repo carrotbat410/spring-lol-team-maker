@@ -23,6 +23,7 @@ public class BoardController {
     public SuccessResult<Page<BoardDTO>> getMyBoards(Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
+        //TODO getTotalElements count query 최적화하기
         Page<BoardDTO> boardsPage = boardService.getMyBoards(userId, pageable);
         return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());
     }
