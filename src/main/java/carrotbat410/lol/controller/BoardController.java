@@ -6,6 +6,8 @@ import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.service.BoardService;
 import carrotbat410.lol.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +20,11 @@ public class BoardController {
     private BoardService boardService;
 
     @GetMapping("/my/boards")
-    public SuccessResult<List<BoardDTO>> getMyBoards(Pageable pageable) {
+    public SuccessResult<Page<BoardDTO>> getMyBoards(Pageable pageable) {
         Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
 
-        List<BoardDTO> boards = boardService.getMyBoards(userId, pageable);
-        return new SuccessResult<>("ok", boards);
+        Page<BoardDTO> boardsPage = boardService.getMyBoards(userId, pageable);
+        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());
     }
 
     @GetMapping("/boards")

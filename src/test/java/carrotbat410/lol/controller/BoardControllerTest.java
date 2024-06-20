@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -48,10 +50,12 @@ class BoardControllerTest {
         // given
         BoardDTO boardDTO1 = new BoardDTO(1L, "title1", "content1", 1L, "user1");
         BoardDTO boardDTO2 = new BoardDTO(2L, "title2", "content2", 2L, "user2");
-        List<BoardDTO> boards = List.of(boardDTO1, boardDTO2);
+        List<BoardDTO> content = List.of(boardDTO1, boardDTO2);
+        PageRequest pageRequest = PageRequest.of(0, 30);
+        PageImpl<BoardDTO> boardsPage = new PageImpl<>(content, pageRequest, content.size());
 
         // stubbing
-        when(boardService.getMyBoards(any(), any())).thenReturn(boards);
+        when(boardService.getMyBoards(any(), any())).thenReturn(boardsPage);
 
         // when // then
         mockMvc.perform(get("/my/boards")
@@ -60,10 +64,8 @@ class BoardControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("ok"))
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data.length()").value(boards.size()));
-
-
+                .andExpect(jsonPath("$.data.content").isArray())
+                .andExpect(jsonPath("$.data.content.length()").value(content.size()));
     }
 
     @Test

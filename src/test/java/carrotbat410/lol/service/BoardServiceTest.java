@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,7 @@ class BoardServiceTest {
         boardRepository.saveAll(List.of(board1, board2));
         // when
         PageRequest pageRequest = PageRequest.of(0, 30);
-        List<BoardDTO> allBoards = boardService.getMyBoards(user1.getId(), pageRequest);
+        Page<BoardDTO> allBoards = boardService.getMyBoards(user1.getId(), pageRequest);
 
         // then
         assertThat(allBoards)

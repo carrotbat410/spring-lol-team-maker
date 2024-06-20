@@ -8,6 +8,7 @@ import carrotbat410.lol.exhandler.exception.AccessDeniedException;
 import carrotbat410.lol.repository.BoardRepository;
 import carrotbat410.lol.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,16 @@ public class BoardService {
     @Autowired
     UserRepository userRepository;
 
-    public List<BoardDTO> getMyBoards(Long userId, Pageable pageable) {
-        return boardRepository.findByUserId(userId, pageable).stream()
-                .map(b -> new BoardDTO(b.getId(), b.getTitle(), b.getContent(), b.getUser().getId(), b.getUser().getUsername()))
-                .collect(Collectors.toList());
+    public Page<BoardDTO> getMyBoards(Long userId, Pageable pageable) {
+        Page<Board> boardsPage = boardRepository.findByUserId(userId, pageable);
+
+        return boardsPage.map(board -> new BoardDTO(
+                board.getId(),
+                board.getTitle(),
+                board.getContent(),
+                board.getUser().getId(),
+                board.getUser().getUsername()
+        ));
     }
 
     public List<BoardDTO> getAllBoards(Pageable pageable) {
