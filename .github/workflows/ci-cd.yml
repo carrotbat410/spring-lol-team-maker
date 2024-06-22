@@ -23,7 +23,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Create application.properties for test
-        run: |
+#        run: |
 #          mkdir -p src/test/resources
 #          echo "spring.datasource.url=jdbc:h2:mem:testdb" > src/test/resources/application.properties
 #          echo "spring.datasource.driver-class-name=org.h2.Driver" >> src/test/resources/application.properties
@@ -34,9 +34,14 @@ jobs:
 #          echo "spring.jwt.secret=tmpSecretForTest" >> src/test/resources/application.properties
 #          echo "spring.data.web.pageable.default-page-size=30" >> src/test/resources/application.properties
 #          echo "spring.data.web.pageable.max-page-size=1000" >> src/test/resources/application.properties
-          touch ./src/test/resources/application.properties
-          echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
-          cat ./src/test/resources/application.properties
+#          touch ./src/test/resources/application.properties
+#          echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
+#          cat ./src/test/resources/application.properties
+        run: touch ./src/test/resources/application.properties
+      - name: Add properties at application.properties
+        run: echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
+      - name: Check application.properties
+        run: cat ./src/test/resources/application.properties
 
       - name: Build with Gradle
         run: ./gradlew build
