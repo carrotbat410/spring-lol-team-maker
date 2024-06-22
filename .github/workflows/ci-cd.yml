@@ -37,11 +37,11 @@ jobs:
 #          touch ./src/test/resources/application.properties
 #          echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
 #          cat ./src/test/resources/application.properties
-        run: mkdir -p src/test/resources
+        run: mkdir -p src/main/resources
       - name: Add properties at application.properties
-        run: echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/test/resources/application.properties
+        run: echo "${{ secrets.TEST_APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
       - name: Check application.properties
-        run: cat ./src/test/resources/application.properties
+        run: cat ./src/main/resources/application.properties
 
       - name: Build with Gradle
         run: ./gradlew build
