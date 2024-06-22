@@ -22,6 +22,20 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Create application.properties for test
+        run: |
+          mkdir -p src/test/resources
+          echo "spring.datasource.url=jdbc:h2:mem:testdb" > src/test/resources/application.properties
+          echo "spring.datasource.driver-class-name=org.h2.Driver" >> src/test/resources/application.properties
+          echo "spring.datasource.username=sa" >> src/test/resources/application.properties
+          echo "spring.datasource.password=" >> src/test/resources/application.properties
+          echo "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect" >> src/test/resources/application.properties
+          echo "spring.jpa.hibernate.ddl-auto=create" >> src/test/resources/application.properties
+          echo "spring.jwt.secret=tmpSecretForTest" >> src/test/resources/application.properties
+          echo "spring.data.web.pageable.default-page-size=30" >> src/test/resources/application.properties
+          echo "spring.data.web.pageable.max-page-size=1000" >> src/test/resources/application.properties
+          
+
       - name: Build with Gradle
         run: ./gradlew build
 
