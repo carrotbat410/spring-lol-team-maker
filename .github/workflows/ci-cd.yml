@@ -69,6 +69,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            echo "hi"
             docker pull carrotbat410/spring-lol-repository
             docker-compose down
             docker-compose up -d
