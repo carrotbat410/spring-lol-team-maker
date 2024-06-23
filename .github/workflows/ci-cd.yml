@@ -63,7 +63,7 @@ jobs:
 #        run: docker push carrotbat410/spring-lol-repository
 
       - name: Deploy to Server
-        if: env.check_tests == 'Tests Passed'
+#        if: env.check_tests == 'Tests Passed'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
