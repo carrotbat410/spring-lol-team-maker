@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: Set up Local MySQL for Test
         uses: mirromutth/mysql-action@v1.1
@@ -28,48 +28,49 @@ jobs:
           host port: 3306
           container port: 3306
           mysql database: 'lol-test'
-          mysql root password: ''
+          mysql root password: 'tmpPassword'
 
       - name: Create application.properties for test
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_PROPERTIES_FOR_TEST }}" > ./src/main/resources/application.properties
-          cat ./src/main/resources/application.properties
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
+          echo "${{ secrets.APPLICATION_PROPERTIES_PROD }}" > src/main/resources/application-prod.properties
+          echo "${{ secrets.APPLICATION_PROPERTIES_SECRET }}" > src/main/resources/application-secret.properties
+          cat src/main/resources/application.properties
+
+      #GitHub Actions에서 steps.<step_id>.conclusion은 해당 단계의 결과를 나타냄.
+      # conclusion 값은 GitHub Actions 자체에서 할당하며, 가능한 값 종류는 success / failure / cancelled / skipped 이 있음.
+      - name: Test with Gradle
+        id: gradle-test
+        run: SPRING_PROFILES_ACTIVE=secret ./gradlew test
 
       - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Test with Gradle
-        run: ./gradlew test
-
-#      - name: Check if tests passed
-#        id: check_tests
-#        run: echo "Tests Passed" >> $GITHUB_ENV
+        if: steps.gradle-test.conclusion == 'success'
+        run: SPRING_PROFILES_ACTIVE=secret ./gradlew build
 
       - name: Login to Docker Hub
-#        if: env.check_tests == 'Tests Passed'
+        if: steps.gradle-test.conclusion == 'success'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build Docker image
-#        if: env.check_tests == 'Tests Passed'
+        if: steps.gradle-test.conclusion == 'success'
         run: docker build . -t carrotbat410/spring-lol-repository
 
       - name: Push Docker image
-#        if: env.check_tests == 'Tests Passed'
+        if: steps.gradle-test.conclusion == 'success'
         run: docker push carrotbat410/spring-lol-repository
 
       - name: Deploy to Server
-#        if: env.check_tests == 'Tests Passed'
+        if: steps.gradle-test.conclusion == 'success'
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            echo "hi"
-            docker pull carrotbat410/spring-lol-repository
-            docker-compose down
-            docker-compose up -d
+            /home/ubuntu/deploy.sh
+            docker rmi -f $(docker images -f "dangling=true" -q)
+#          tag:none인 이미지 지우는 명령어

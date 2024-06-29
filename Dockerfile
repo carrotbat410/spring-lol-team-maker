@@ -1,18 +1,9 @@
-# Use the official openjdk image as a parent image
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk
 
-# Set the working directory
+COPY build/libs/lol-0.0.1-SNAPSHOT.jar /app/application.jar
+
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Install dependencies and build the application
-#RUN ./gradlew build
-RUN ./gradlew bootJar
-
-# Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run the application
-CMD ["java", "-jar", "build/libs/spring-lol-repository-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/app/application.jar"]
