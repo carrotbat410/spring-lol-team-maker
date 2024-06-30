@@ -60,3 +60,4 @@ volumes:
 networks:
   spring-lol-network:
     external: true
+    driver: bridge
