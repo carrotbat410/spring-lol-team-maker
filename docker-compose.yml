@@ -45,6 +45,7 @@ services:
     environment:
       MYSQL_DATABASE: lol_prod
       MYSQL_USER: root
+      MYSQL_PASSWORD: tmpPassword
       MYSQL_ROOT_PASSWORD: tmpPassword
     ports:
       - "3306:3306"
