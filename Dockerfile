@@ -6,4 +6,5 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/app/application.jar"]
+#CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/app/application.jar"]
+CMD ["java", "-jar", "-Xms300m", "-Xmx300m", "-Dspring.profiles.active=prod", "/app/application.jar"]
