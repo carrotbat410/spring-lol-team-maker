@@ -29,8 +29,10 @@ public class BoardService {
                 board.getId(),
                 board.getTitle(),
                 board.getContent(),
-                board.getUser().getId(),
-                board.getUser().getUsername()
+//                board.getUser().getId(),
+//                board.getUser().getUsername()
+                userId,
+                null
         ));
     }
 
