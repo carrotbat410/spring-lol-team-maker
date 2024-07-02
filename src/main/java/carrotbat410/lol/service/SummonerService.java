@@ -19,7 +19,7 @@ import java.util.List;
 //TODO 근데 짜피 나중에 서비스에 텔레그램 전송 로직 붙일건데, 나머지도 다 영향받는거 아닌가?? 이런 문제떄문에 AOP사용하는건가?
 @Service
 @RequiredArgsConstructor
-@Transactional //! transactional 추가해야 updateSummoner 적용됨. 원인 정확히 알아보기 (추측: 영속성 컨텍스트 생명주기가 tx와 같아서?) //TODO 외부 API요청 로직떄문에 가능하다면 trx안붙이는게 성능상 유리하지 않을까?
+@Transactional(readOnly = true) //! transactional 추가해야 updateSummoner 적용됨. 원인 정확히 알아보기 (추측: 영속성 컨텍스트 생명주기가 tx와 같아서?) //TODO 외부 API요청 로직떄문에 가능하다면 trx안붙이는게 성능상 유리하지 않을까?
 public class SummonerService {
     private final SummonerRepository summonerRepository;
     private final RiotUtils riotUtils;
@@ -28,6 +28,7 @@ public class SummonerService {
         return summonerRepository.findMySummoners(userId, pageable);
     }
 
+    @Transactional
     public SummonerDTO addSummoner(Long userId, String summonerName, String tagLine) {
 
         Summoner existingAddedSummoner = summonerRepository.findExistingSummoner(userId, summonerName, tagLine);
@@ -46,6 +47,7 @@ public class SummonerService {
         return SummonerDTO.from(saveResult);
     }
 
+    @Transactional
     public SummonerDTO updateSummoner(Long summonerId) {
 
         Summoner summoner = summonerRepository.findById(summonerId).orElseThrow(() -> new NotFoundException("해당 유저는 존재하지 않습니다."));
@@ -59,6 +61,7 @@ public class SummonerService {
         return SummonerDTO.from(summoner);
     }
 
+    @Transactional
     public void deleteSummoner(Long summonerId) {
         summonerRepository.deleteById(summonerId);
     }

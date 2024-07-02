@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class BoardService {
     @Autowired
     BoardRepository boardRepository;
@@ -48,6 +50,7 @@ public class BoardService {
         ));
     }
 
+    @Transactional
     public void writeBoard(Long userId, WriteBoardRequestDTO request) {
         //TODO 찾을 필요가 있을까? userRepository.getReferenceById(userId) 메서드?? 찾아보기
         User user = userRepository.findById(userId).orElseThrow(()-> new AccessDeniedException("존재하지 않는 유저입니다. 재 로그인후 다시 요청해주세요."));
