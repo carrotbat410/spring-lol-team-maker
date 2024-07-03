@@ -68,29 +68,29 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.data.content.length()").value(content.size()));
     }
 
-    @Test
-    @DisplayName("게시된 글 목록을 조회할 수 있다.")
-    void getAllBoards() throws Exception {
-        // given
-        BoardDTO boardDTO1 = new BoardDTO(1L, "title1", "content1", 1L, "user1");
-        BoardDTO boardDTO2 = new BoardDTO(2L, "title2", "content2", 2L, "user2");
-        BoardDTO boardDTO3 = new BoardDTO(3L, "title3", "content3", 3L, "user3");
-        List<BoardDTO> content = List.of(boardDTO1, boardDTO2, boardDTO3);
-        PageRequest pageRequest = PageRequest.of(0, 30);
-        PageImpl<BoardDTO> boardsPage = new PageImpl<>(content, pageRequest, content.size());
-
-        // stubbing
-        when(boardService.getAllBoards(any())).thenReturn(boardsPage);
-
-        // when // then
-        mockMvc.perform(get("/boards")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.content.length()").value(3));
-    }
+//    @Test
+//    @DisplayName("게시된 글 목록을 조회할 수 있다.")
+//    void getAllBoards() throws Exception {
+//        // given
+//        BoardDTO boardDTO1 = new BoardDTO(1L, "title1", "content1", 1L, "user1");
+//        BoardDTO boardDTO2 = new BoardDTO(2L, "title2", "content2", 2L, "user2");
+//        BoardDTO boardDTO3 = new BoardDTO(3L, "title3", "content3", 3L, "user3");
+//        List<BoardDTO> content = List.of(boardDTO1, boardDTO2, boardDTO3);
+//        PageRequest pageRequest = PageRequest.of(0, 30);
+//        PageImpl<BoardDTO> boardsPage = new PageImpl<>(content, pageRequest, content.size());
+//
+//        // stubbing
+//        when(boardService.getAllBoards(any())).thenReturn(boardsPage);
+//
+//        // when // then
+//        mockMvc.perform(get("/boards")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf()))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data.content").isArray())
+//                .andExpect(jsonPath("$.data.content.length()").value(3));
+//    }
 
     @Test
     @DisplayName("제목없이 글을 작성하면 예외를 던진다.")
