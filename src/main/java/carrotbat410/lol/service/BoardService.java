@@ -4,16 +4,20 @@ import carrotbat410.lol.dto.board.BoardDTO;
 import carrotbat410.lol.dto.board.WriteBoardRequestDTO;
 import carrotbat410.lol.entity.Board;
 import carrotbat410.lol.entity.User;
+import carrotbat410.lol.entity.cache.BoardCache;
 import carrotbat410.lol.exhandler.exception.AccessDeniedException;
+import carrotbat410.lol.repository.BoardRedisRepository;
 import carrotbat410.lol.repository.BoardRepository;
 import carrotbat410.lol.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,39 +27,76 @@ public class BoardService {
     BoardRepository boardRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    BoardRedisRepository boardCacheRepository;
+
+    private static final Long CACHE_TTL = 10L; // 10초 TTL 설정
 
     public Page<BoardDTO> getMyBoards(Long userId, Pageable pageable) {
-        Page<Board> boardsPage = boardRepository.findByUserId(userId, pageable);
+        String cacheKey = "myBoards_" + userId + "_" + pageable.getPageNumber() + "_" + pageable.getPageSize();
+        Optional<BoardCache> cachedResult = boardCacheRepository.findById(cacheKey);
 
-        return boardsPage.map(board -> new BoardDTO(
-                board.getId(),
-                board.getTitle(),
-                board.getContent(),
-//                board.getUser().getId(),
-//                board.getUser().getUsername()
-                userId,
-                null
-        ));
+        if (cachedResult.isPresent()) {
+            BoardCache cache = cachedResult.get();
+            return new PageImpl<>(cache.getBoards(), pageable, cache.getTotalElements());
+        } else {
+            Page<Board> boardsPage = boardRepository.findByUserId(userId, pageable);
+            List<BoardDTO> boardDTOs = boardsPage.stream().map(board -> new BoardDTO(
+                    board.getId(),
+                    board.getTitle(),
+                    board.getContent(),
+                    userId,
+                    null
+            )).collect(Collectors.toList());
+
+            BoardCache boardCache = new BoardCache(cacheKey, boardDTOs, pageable.getPageNumber(), pageable.getPageSize(), boardsPage.getTotalElements(), CACHE_TTL);
+            boardCacheRepository.save(boardCache);
+            return boardsPage.map(board -> new BoardDTO(
+                    board.getId(),
+                    board.getTitle(),
+                    board.getContent(),
+                    userId,
+                    null
+            ));
+        }
     }
 
     public Page<BoardDTO> getAllBoards(Pageable pageable) {
-        Page<Board> boardsPage = boardRepository.findAll(pageable);
+        String cacheKey = "allBoards_" + pageable.getPageNumber() + "_" + pageable.getPageSize();
+        Optional<BoardCache> cachedResult = boardCacheRepository.findById(cacheKey);
 
-        return boardsPage.map(board -> new BoardDTO(
-                board.getId(),
-                board.getTitle(),
-                board.getContent(),
-                board.getUser().getId(),
-                board.getUser().getUsername()
-        ));
+        if (cachedResult.isPresent()) {
+            BoardCache cache = cachedResult.get();
+            return new PageImpl<>(cache.getBoards(), pageable, cache.getTotalElements());
+        } else {
+            Page<Board> boardsPage = boardRepository.findAll(pageable);
+            List<BoardDTO> boardDTOs = boardsPage.stream().map(board -> new BoardDTO(
+                    board.getId(),
+                    board.getTitle(),
+                    board.getContent(),
+                    board.getUser().getId(),
+                    board.getUser().getUsername()
+            )).collect(Collectors.toList());
+
+            BoardCache boardCache = new BoardCache(cacheKey, boardDTOs, pageable.getPageNumber(), pageable.getPageSize(), boardsPage.getTotalElements(), CACHE_TTL);
+            boardCacheRepository.save(boardCache);
+            return boardsPage.map(board -> new BoardDTO(
+                    board.getId(),
+                    board.getTitle(),
+                    board.getContent(),
+                    board.getUser().getId(),
+                    board.getUser().getUsername()
+            ));
+        }
     }
 
     @Transactional
     public void writeBoard(Long userId, WriteBoardRequestDTO request) {
-        //TODO 찾을 필요가 있을까? userRepository.getReferenceById(userId) 메서드?? 찾아보기
-//        User user = userRepository.findById(userId).orElseThrow(()-> new AccessDeniedException("존재하지 않는 유저입니다. 재 로그인후 다시 요청해주세요."));
         User user = userRepository.getReferenceById(userId);
         Board newBoard = new Board(null, request.getTitle(), request.getContent(), request.getBoardCategory(), user);
         boardRepository.save(newBoard);
+
+        // 캐시 무효화
+//        boardCacheRepository.deleteAll();
     }
 }
