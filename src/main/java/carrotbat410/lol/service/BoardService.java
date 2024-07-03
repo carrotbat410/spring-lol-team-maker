@@ -53,7 +53,8 @@ public class BoardService {
     @Transactional
     public void writeBoard(Long userId, WriteBoardRequestDTO request) {
         //TODO 찾을 필요가 있을까? userRepository.getReferenceById(userId) 메서드?? 찾아보기
-        User user = userRepository.findById(userId).orElseThrow(()-> new AccessDeniedException("존재하지 않는 유저입니다. 재 로그인후 다시 요청해주세요."));
+//        User user = userRepository.findById(userId).orElseThrow(()-> new AccessDeniedException("존재하지 않는 유저입니다. 재 로그인후 다시 요청해주세요."));
+        User user = userRepository.getReferenceById(userId);
         Board newBoard = new Board(null, request.getTitle(), request.getContent(), request.getBoardCategory(), user);
         boardRepository.save(newBoard);
     }
