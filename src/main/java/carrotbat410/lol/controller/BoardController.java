@@ -2,6 +2,7 @@ package carrotbat410.lol.controller;
 
 import carrotbat410.lol.dto.board.BoardDTO;
 import carrotbat410.lol.dto.board.WriteBoardRequestDTO;
+import carrotbat410.lol.dto.paging.PageDTO;
 import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.service.BoardService;
 import carrotbat410.lol.utils.SecurityUtils;
@@ -28,8 +29,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public SuccessResult<Page<BoardDTO>> getAllBoards(Pageable pageable) {
-        Page<BoardDTO> boardsPage = boardService.getAllBoards(pageable);
+    public SuccessResult<PageDTO<BoardDTO>> getAllBoards(Pageable pageable) {
+        PageDTO<BoardDTO> boardsPage = boardService.getAllBoards(pageable);
         return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());//TODO getTotalElements count query 최적화하기
     }
 
