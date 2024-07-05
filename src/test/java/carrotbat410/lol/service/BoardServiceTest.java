@@ -84,7 +84,9 @@ class BoardServiceTest {
                 );
     }
 
-    //TODO findById()에서 getReferenceById()으로 바꾸면서 달라짐. 아예 없는게 맞는지 고민해보기
+    //TODO 아래 상황 생각해보기.
+    // getReferenceById사용하므로서, 존재하는 유저인지 검증하는 과정이 없어짐. =>이 테스트 필요없어짐.
+    // 조회 쿼리시 inner join해서 상관없을려나?
 //    @Test
 //    @DisplayName("존재하지 않는 유저가 게시글 작성시 예외를 반환한다.")
 //    void writeBoardWithNoExistingUser() throws Exception {
