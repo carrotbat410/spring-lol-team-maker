@@ -30,7 +30,7 @@ public class BoardService {
     @Autowired
     BoardRedisRepository boardCacheRepository;
 
-    private static final Long CACHE_TTL = 10L; // 10초 TTL 설정
+    private static final Long CACHE_TTL = 7L; // 10초 TTL 설정
 
     public Page<BoardDTO> getMyBoards(Long userId, Pageable pageable) {
         String cacheKey = "myBoards_" + userId + "_" + pageable.getPageNumber() + "_" + pageable.getPageSize();
@@ -97,6 +97,6 @@ public class BoardService {
         boardRepository.save(newBoard);
 
         // 캐시 무효화
-//        boardCacheRepository.deleteAll();
+        boardCacheRepository.deleteAll();
     }
 }
