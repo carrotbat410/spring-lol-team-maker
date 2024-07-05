@@ -27,25 +27,26 @@ public class UserService {
     }
 
     public void joinProcess(JoinDTO joinDTO) {
+        validateDuplicatedUser(joinDTO.getUsername());
+        saveUser(joinDTO);
+    }
 
-        String username = joinDTO.getUsername();
-        String password = joinDTO.getPassword();
+    @Transactional(readOnly = true)
+    public void validateDuplicatedUser(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new DataConflictException("이미 존재하는 유저입니다.");
+        }
+    }
 
-        validateDuplicatedUser(username);
-
-        User user = new User(null, username, bCryptPasswordEncoder.encode(password), "ROLE_USER"); //TODO 게시판 기능 구현할거면,ENUM으로 사용하기
-
+    @Transactional
+    public void saveUser(JoinDTO joinDTO) {
+        User user = new User(null, joinDTO.getUsername(), bCryptPasswordEncoder.encode(joinDTO.getPassword()), "ROLE_USER");
         userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
         summonerRepository.deleteByUserId(id);
     }
-
-    private void validateDuplicatedUser(String username) {
-        Boolean isExist = userRepository.existsByUsername(username);
-        if (isExist) throw new DataConflictException("이미 존재하는 유저입니다.");
-    }
-
 }
