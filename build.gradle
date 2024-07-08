@@ -49,8 +49,6 @@ dependencies {
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation 'org.springframework.data:spring-data-redis'
-
 }
 
 tasks.named('test') {
