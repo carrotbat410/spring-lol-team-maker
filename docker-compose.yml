@@ -57,7 +57,8 @@ services:
       - spring-lol-network
 
   redis:
-    image: redis:7.2.5-alpine
+    container_name: redis
+    image: redis:latest
     ports:
       - 6379:6379
     networks:
