@@ -4,6 +4,25 @@ IS_APP1=$(docker ps | grep container1)
 IS_REDIS=$(docker ps | grep redis)
 MAX_RETRIES=30
 
+#옵션 정리글 https://lxstitch.tistory.com/65
+#return: 함수 종료하는 키워드. main 함수에서 사용하면, 프로그램 바로 종료됨.
+#exit: main함수가 아닌 곳에서 호출되어도, 바로 프로그램 종료됨.
+
+#exit 0: 정상 작동후 종료
+#exit 1: 에러후 강제 종료
+
+#if문
+# -z string: 문자열의 길이가 0이면 참
+# -n string: 문자열의 길이가 0아 아니면 참
+
+#산술 비교
+#[A -lt B]: A Less Then B 이면 참.
+#[A -le B]: A Less Equal B
+#-ne: Not equal
+#-gt: Grater Then
+#-ge: Grater Equal
+
+# 헬스 체크 함수 (Using HTTP Request)
 check_service() {
   local RETRIES=0
   local URL=$1
