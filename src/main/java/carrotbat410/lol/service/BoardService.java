@@ -5,7 +5,6 @@ import carrotbat410.lol.dto.board.WriteBoardRequestDTO;
 import carrotbat410.lol.entity.Board;
 import carrotbat410.lol.entity.User;
 import carrotbat410.lol.entity.cache.BoardCache;
-import carrotbat410.lol.exhandler.exception.AccessDeniedException;
 import carrotbat410.lol.repository.BoardRedisRepository;
 import carrotbat410.lol.repository.BoardRepository;
 import carrotbat410.lol.repository.UserRepository;
@@ -97,6 +96,6 @@ public class BoardService {
         boardRepository.save(newBoard);
 
         // 캐시 무효화
-        boardCacheRepository.deleteAll();
+//        boardCacheRepository.deleteAll();
     }
 }
