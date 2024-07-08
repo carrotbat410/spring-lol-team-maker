@@ -24,13 +24,34 @@ check_service() {
   return 1
 }
 
+# Redis 헬스 체크 함수 (Using redis-cli)
+# Redis 서버는 HTTP Request 허용 X -> redis-cli ping 사용
+check_redis() {
+  local RETRIES=0
+  while [ $RETRIES -lt $MAX_RETRIES ]; do
+    echo "Checking Redis... (attempt: $((RETRIES+1)))"
+    sleep 3
+
+    REQUEST=$(docker exec redis redis-cli ping)
+    if [ "$REQUEST" == "PONG" ]; then
+      echo "Redis health check success"
+      return 0
+    fi
+
+    RETRIES=$((RETRIES+1))
+  done;
+
+  echo "Failed to check Redis after $MAX_RETRIES attempts."
+  return 1
+}
+
 # Check if redis is running, if not, start it and perform a health check
 if [ -z "$IS_REDIS" ]; then
   echo "Redis 컨테이너가 실행되고 있지 않습니다. Redis 컨테이너를 시작합니다."
   docker-compose up -d redis
 
   echo "Redis health check"
-  if ! check_service "http://127.0.0.1:6379"; then
+  if ! check_redis; then
     echo "Redis health check가 실패했습니다."
     exit 1
   fi
