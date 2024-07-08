@@ -6,6 +6,7 @@ services:
       - "8081:8080"
     depends_on:
       - mysql-db
+      - redis
     networks:
       - spring-lol-network
 
@@ -16,6 +17,7 @@ services:
       - "8082:8080"
     depends_on:
       - mysql-db
+      - redis
     networks:
       - spring-lol-network
 
@@ -26,6 +28,7 @@ services:
       - "8083:8080"
     depends_on:
       - mysql-db
+      - redis
     networks:
       - spring-lol-network
 
@@ -36,6 +39,7 @@ services:
       - "8084:8080"
     depends_on:
       - mysql-db
+      - redis
     networks:
       - spring-lol-network
 
@@ -52,6 +56,12 @@ services:
     networks:
       - spring-lol-network
 
+  redis:
+    image: redis:7.2.5-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - spring-lol-network
 volumes:
   mysql-data:
 

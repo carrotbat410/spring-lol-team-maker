@@ -1,6 +1,7 @@
 #!/bin/bash
 
 IS_APP1=$(docker ps | grep container1)
+IS_REDIS=$(docker ps | grep redis)
 MAX_RETRIES=30
 
 check_service() {
@@ -23,7 +24,21 @@ check_service() {
   return 1
 }
 
-if [ -z "$IS_APP1" ];then
+# Check if redis is running, if not, start it and perform a health check
+if [ -z "$IS_REDIS" ]; then
+  echo "Redis 컨테이너가 실행되고 있지 않습니다. Redis 컨테이너를 시작합니다."
+  docker-compose up -d redis
+
+  echo "Redis health check"
+  if ! check_service "http://127.0.0.1:6379"; then
+    echo "Redis health check가 실패했습니다."
+    exit 1
+  fi
+else
+  echo "Redis 컨테이너가 이미 실행 중입니다."
+fi
+
+if [ -z "$IS_APP1" ]; then
   echo "### App3 App4 => APP1 App2 ###"
 
   echo "1. App1 이미지 받기"
