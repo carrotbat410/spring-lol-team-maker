@@ -51,7 +51,7 @@ check_redis() {
     echo "Checking Redis... (attempt: $((RETRIES+1)))"
     sleep 3
 
-    REQUEST=$(docker exec redis redis-cli ping)
+    REQUEST=$(sudo docker exec redis redis-cli ping)
     if [ "$REQUEST" == "PONG" ]; then
       echo "Redis health check success"
       return 0
