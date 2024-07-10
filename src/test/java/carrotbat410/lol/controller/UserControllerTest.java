@@ -2,9 +2,11 @@ package carrotbat410.lol.controller;
 
 import carrotbat410.lol.dto.auth.JoinDTO;
 import carrotbat410.lol.service.UserService;
+import carrotbat410.lol.utils.SecurityUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mockStatic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -178,33 +182,52 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("ok"));
     }
 
-    //TODO ClassCastException 해결하기: extractUserIdFromAuthentication 메서드 내의 (CustomUserDetails) 캐스팅에서 에러남.
-//    @Test
-//    @DisplayName("회원 탈퇴할 수 있다.")
-//    void deleteUserSuccess() throws Exception {
-//        // given
-//        Authentication authentication = Mockito.mock(Authentication.class);
-//
-//        UserTokenDTO userTokenDTO = new UserTokenDTO(1L, "test123", "asd123", "USER_ROLE");
-//        CustomUserDetails userDetails = new CustomUserDetails(userTokenDTO);
-//
-//        // authentication.getPrincipal()이 userDetails를 반환하도록 설정
-//        when(authentication.getPrincipal()).thenReturn(userDetails);
-//
-//        // SecurityContext를 mock으로 설정하고 authentication을 반환하도록 설정
-//        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-//        when(securityContext.getAuthentication()).thenReturn(authentication);
-//        SecurityContextHolder.setContext(securityContext);
-//
-//        // when // then
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .with(csrf())
-//                )
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.message").value("ok"));
-//
-//    }
+    @Test
+    @DisplayName("test1계정은 샘플 계정이므로, 회원 탈퇴할 수 없다.")
+    @WithMockUser //! 로그인한 상태이여야함,
+    void deleteSampleUser() throws Exception {
+        // given
+        //* 정적 메서드(=SecurityUtils내부 메서드)를 mocking하려면, mockito-inline를 사용하여 런타임시 Bytecode를 조작해야한다.
+        // when(SecurityUtils.getCurrentUsernameFromAuthentication()).thenReturn("test1");
+
+        //* mockito-inline 사용한 mocking
+        MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class);
+        given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test1");
+
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("test 계정은 회원 탈퇴할 수 없습니다."));
+
+        mockedStatic.close(); //! 자원에 대한 close() 를 호출해줘야 한다.
+        //! close 하지 않으면 해당 Thread는 활성 Thread로 남기 때문에 다른 테스트에 영향을 줄 수 있다.
+    }
+
+    @Test
+    @DisplayName("유저는 회원 탈퇴를 할 수 있다.")
+    @WithMockUser
+    void deleteUserSuccess() throws Exception {
+        // given
+
+        MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class);
+        given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test123");
+        given(SecurityUtils.getCurrentUserIdFromAuthentication()).willReturn(1L);
+
+        // when // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("ok"));
+
+        mockedStatic.close();
+    }
 
 }
