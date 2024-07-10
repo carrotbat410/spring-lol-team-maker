@@ -5,7 +5,6 @@ import carrotbat410.lol.dto.board.BoardDTO;
 import carrotbat410.lol.dto.board.WriteBoardRequestDTO;
 import carrotbat410.lol.entity.Board;
 import carrotbat410.lol.entity.User;
-import carrotbat410.lol.exhandler.exception.AccessDeniedException;
 import carrotbat410.lol.repository.BoardRepository;
 import carrotbat410.lol.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -48,10 +47,24 @@ class BoardServiceTest {
         boardRepository.saveAll(List.of(board1, board2));
         // when
         PageRequest pageRequest = PageRequest.of(0, 30);
-        Page<BoardDTO> allBoards = boardService.getMyBoards(user1.getId(), pageRequest);
+        Page<BoardDTO> myBoards = boardService.getMyBoards(user1.getId(), pageRequest);
 
         // then
-        assertThat(allBoards)
+        assertThat(myBoards)
+                .hasSize(1)
+                .extracting("title", "content")
+                .contains(
+                        tuple("title1", "content1")
+                );
+
+
+        // 캐시에 저장된 결과 확인
+        //TODO 캐싱 테스트메서드를 따로 구분하는게 가독성이 더 좋은거 같음.
+        Board board3 = new Board(null, "title3", "content3", MATCH, user1);
+        boardRepository.save(board3);
+
+        Page<BoardDTO> cachedMyBoards = boardService.getMyBoards(user1.getId(), pageRequest);
+        assertThat(cachedMyBoards)
                 .hasSize(1)
                 .extracting("title", "content")
                 .contains(
@@ -76,6 +89,20 @@ class BoardServiceTest {
 
         // then
         assertThat(allBoards)
+                .hasSize(2)
+                .extracting("title", "content")
+                .contains(
+                        tuple("title1", "content1"),
+                        tuple("title2", "content2")
+                );
+
+        // 캐시에 저장된 결과 확인
+        //TODO 캐싱 테스트메서드를 따로 구분하는게 가독성이 더 좋은거 같음.
+        Board board3 = new Board(null, "title3", "content3", MATCH, user1);
+        boardRepository.save(board3);
+
+        Page<BoardDTO> cachedAllBoards = boardService.getAllBoards(pageRequest);
+        assertThat(cachedAllBoards)
                 .hasSize(2)
                 .extracting("title", "content")
                 .contains(
