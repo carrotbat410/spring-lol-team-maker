@@ -53,6 +53,104 @@ class SummonerServiceTest {
     }
 
     @Test
+    @DisplayName("소환사를 추가할떄 먼저 DB에 존재하는지 조회하는데, pureEnglishSummonerName이여도 대소문자 구분을 무시하고 조회한다.")
+    void addSummonerAlwaysLowerCaseWithPureEnglishSummonerName() throws Exception {
+        // given
+        Long userId = 1L;
+        String summonerName1 = "pureEnglishSummonerName";
+        String summonerName2 = "pureenglishsummonername";
+        String tagLine = "KR1";
+
+        Summoner existingSummoner = new Summoner(null, userId, summonerName1, tagLine, "Gold", 1, 22, 100, 50, 20, 123);
+        summonerRepository.save(existingSummoner);
+
+        // when // then
+        Assertions.assertThatThrownBy(() -> summonerService.addSummoner(userId, summonerName2, tagLine))
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage("이미 존재하는 유저입니다.");
+    }
+
+    @Test
+    @DisplayName("소환사를 추가할떄 먼저 DB에 존재하는지 조회하는데, pureEnglishSummonerName이 아니여도 대소문자 구분을 무시하고 조회한다.")
+    void addSummonerAlwaysLowerCaseWithNotPureEnglishSummonerName() throws Exception {
+        // given
+        Long userId = 1L;
+        String summonerName1 = "가나다ASD123";
+        String summonerName2 = "가나다asd123";
+        String tagLine = "KR1";
+
+        Summoner existingSummoner = new Summoner(null, userId, summonerName1, tagLine, "Gold", 1, 22, 100, 50, 20, 123);
+        summonerRepository.save(existingSummoner);
+
+        // when // then
+        Assertions.assertThatThrownBy(() -> summonerService.addSummoner(userId, summonerName2, tagLine))
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage("이미 존재하는 유저입니다.");
+    }
+
+    @Test
+    @DisplayName("소환사를 추가할떄 먼저 DB에 존재하는지 조회하는데, pureEnglishSummonerName인 경우, 띄어쓰기를 구분하여 조회한다.")
+    void addSummonerWithPureEnglishSummonerNameSeparateSpace() throws Exception {
+        // given
+        Long userId = 1L;
+        String summonerName1 = "pureEnglishSummonerName";
+        String summonerName2 = "pure English Summoner Name";
+        String tagLine = "KR1";
+
+        // stubbing
+        SummonerApiTotalDTO apiResult1 = createSummonerApiTotalDTO(summonerName1, tagLine);
+        when(riotUtils.getSummoner(summonerName1, tagLine)).thenReturn(apiResult1);
+
+        SummonerApiTotalDTO apiResult2 = createSummonerApiTotalDTO(summonerName2, tagLine);
+        when(riotUtils.getSummoner(summonerName2, tagLine)).thenReturn(apiResult2);
+
+        // when
+        SummonerDTO result1 = summonerService.addSummoner(userId, summonerName1, tagLine);
+        SummonerDTO result2 = summonerService.addSummoner(userId, summonerName2, tagLine);
+
+        // then
+        Assertions.assertThat(result1)
+                .isNotNull()
+                .extracting("summonerName", "tagLine")
+                .contains(summonerName1, tagLine);
+
+        Assertions.assertThat(result2)
+                .isNotNull()
+                .extracting("summonerName", "tagLine")
+                .contains(summonerName2, tagLine);
+    }
+
+    @Test
+    @DisplayName("소환사를 추가할떄 먼저 DB에 존재하는지 조회하는데, pureEnglishSummonerName이 아닌 경우, 띄어쓰기를 구분하지 않고 조회한다.")
+    void addSummonerWithPureEnglishSummonerNameNotSeparateSpace() throws Exception {
+        // given
+        Long userId = 1L;
+        String summonerName1 = "가나다 ASD 123";
+        String summonerName2 = "가나다ASD123";
+        String tagLine = "KR1";
+
+        // stubbing
+        SummonerApiTotalDTO apiResult1 = createSummonerApiTotalDTO(summonerName1, tagLine);
+        when(riotUtils.getSummoner(summonerName1, tagLine)).thenReturn(apiResult1);
+
+        SummonerApiTotalDTO apiResult2 = createSummonerApiTotalDTO(summonerName2, tagLine);
+        when(riotUtils.getSummoner(summonerName2, tagLine)).thenReturn(apiResult2);
+
+        // when
+        SummonerDTO result1 = summonerService.addSummoner(userId, summonerName1, tagLine);
+
+        // then
+        Assertions.assertThat(result1)
+                .isNotNull()
+                .extracting("summonerName", "tagLine")
+                .contains(summonerName1, tagLine);
+
+        Assertions.assertThatThrownBy(() -> summonerService.addSummoner(userId, summonerName2, tagLine))
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage("이미 존재하는 유저입니다.");
+    }
+
+    @Test
     @DisplayName("이미 추가한 소환사를 추가할 경우 예외를 던진다.")
     void addAlreadyAddedSummoner() throws Exception {
         // given
@@ -91,6 +189,8 @@ class SummonerServiceTest {
                 .isInstanceOf(DataConflictException.class)
                 .hasMessage("추가할 수 있는 최대 인원은 30명입니다.");
     }
+
+
 
     @Test
     @DisplayName("소환사를 추가할 수 있다.")
