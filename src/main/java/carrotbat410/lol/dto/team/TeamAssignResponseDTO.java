@@ -12,6 +12,7 @@ import java.util.List;
 @ToString
 @Getter
 public class TeamAssignResponseDTO {
+    //* Request Response 의 타입을 인터페이스인 List로 선언하니 훨 나은듯
     private List<SummonerDTO> team1List;
     private List<SummonerDTO> team2List;
     private String team1AvgMmr;

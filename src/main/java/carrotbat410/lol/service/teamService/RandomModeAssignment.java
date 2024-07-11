@@ -23,21 +23,24 @@ public class RandomModeAssignment implements TeamAssignmentStrategy {
 
     @Override
     public TeamAssignResponseDTO assignTeams(TeamAssignRequestDTO requestDTO) {
-        System.out.println("makeResultWithRandomMode 실행됨");
         ArrayList<SummonerDTO> team1List = (ArrayList<SummonerDTO>) requestDTO.getTeam1List();
         ArrayList<SummonerDTO> team2List = (ArrayList<SummonerDTO>) requestDTO.getTeam2List();
         ArrayList<SummonerDTO> noTeamList = (ArrayList<SummonerDTO>) requestDTO.getNoTeamList();
 
+        //#1. 인덱스 0 ~ noTeamList.size() 사이 숫자에서 requiredTeam1Cnt개 뽑기.
         int requiredTeam1Cnt = 5 - requestDTO.getTeam1List().size();
         List<Integer> selectedNumbers = selectNumbers(noTeamList.size(), requiredTeam1Cnt);
 
+        //#2. noTeamList -> team1으로 옮기기
         for (Integer selectedNumber : selectedNumbers) {
             team1List.add(noTeamList.get(selectedNumber));
             noTeamList.remove(selectedNumber);
         }
 
+        //#3. noTeamList에 남아있는 나머지 전부 -> team2로 옮기기
         for (SummonerDTO summonerDTO : noTeamList) team2List.add(summonerDTO);
 
+        //#4. 각 팀의 평균 mmr 구해서 String으로 반환하기
         int team1MmrSum = 0;
         int team2MmrSum = 0;
         for (SummonerDTO summonerDTO : team1List) team1MmrSum += summonerDTO.getMmr();
