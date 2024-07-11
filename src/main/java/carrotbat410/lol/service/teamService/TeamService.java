@@ -35,12 +35,3 @@ public class TeamService {
         return strategy.assignTeams(requestDTO);
     }
 }
-
-@AllArgsConstructor
-class BestTeamResult{
-    public List<SummonerDTO> bestTeam1List;
-    public List<SummonerDTO> bestTeam2List;
-    public int bestTeam1AvgMmr;
-    public int bestTeam2AvgMmr;
-    public int mmrDiff;
-}

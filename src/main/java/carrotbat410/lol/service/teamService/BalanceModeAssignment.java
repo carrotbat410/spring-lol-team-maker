@@ -4,6 +4,7 @@ import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.team.TeamAssignRequestDTO;
 import carrotbat410.lol.dto.team.TeamAssignResponseDTO;
 import carrotbat410.lol.utils.RiotUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,4 +108,13 @@ class BalanceUtils {
         }
 
     }
+}
+
+@AllArgsConstructor
+class BestTeamResult{
+    public List<SummonerDTO> bestTeam1List;
+    public List<SummonerDTO> bestTeam2List;
+    public int bestTeam1AvgMmr;
+    public int bestTeam2AvgMmr;
+    public int mmrDiff;
 }
