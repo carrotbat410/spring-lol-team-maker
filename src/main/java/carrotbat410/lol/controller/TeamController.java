@@ -28,7 +28,7 @@ public class TeamController {
 
         if (requestDTO.getAssingMode() == null) requestDTO.setAssingMode(RANDOM);
 
-        TeamAssignResponseDTO result = teamService.makeResult(requestDTO);
+        TeamAssignResponseDTO result = teamService.executeAssignTeams(requestDTO);
 
         return new SuccessResult<>("ok", result);
     }

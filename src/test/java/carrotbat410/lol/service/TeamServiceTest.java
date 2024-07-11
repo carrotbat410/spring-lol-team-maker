@@ -56,7 +56,7 @@ class TeamServiceTest {
         TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
 
         // when
-        TeamAssignResponseDTO response = teamService.makeResult(requestDTO);
+        TeamAssignResponseDTO response = teamService.executeAssignTeams(requestDTO);
 
         // then
 
@@ -80,7 +80,7 @@ class TeamServiceTest {
         TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(BALANCE, team1List, team2List, noTeamList);
 
         // when
-        TeamAssignResponseDTO response = teamService.makeResult(requestDTO);
+        TeamAssignResponseDTO response = teamService.executeAssignTeams(requestDTO);
 
         // then
         assertThat(response.getTeam1List()).hasSize(5)
@@ -105,7 +105,7 @@ class TeamServiceTest {
         TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(GOLDEN_BALANCE, team1List, team2List, noTeamList);
 
         // when
-        TeamAssignResponseDTO response = teamService.makeResult(requestDTO);
+        TeamAssignResponseDTO response = teamService.executeAssignTeams(requestDTO);
 
         // then
         assertThat(response.getTeam1List()).hasSize(5)

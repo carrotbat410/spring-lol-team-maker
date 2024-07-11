@@ -1,10 +1,8 @@
 package carrotbat410.lol.service.teamService;
 
-import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.dto.team.TeamAssignMode;
 import carrotbat410.lol.dto.team.TeamAssignRequestDTO;
 import carrotbat410.lol.dto.team.TeamAssignResponseDTO;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +26,7 @@ public class TeamService {
                 strategy -> strategy));
     }
 
-    public TeamAssignResponseDTO makeResult(TeamAssignRequestDTO requestDTO) {
+    public TeamAssignResponseDTO executeAssignTeams(TeamAssignRequestDTO requestDTO) {
         TeamAssignMode mode = requestDTO.getAssingMode();
         TeamAssignmentStrategy strategy = strategies.get(mode);
         if (strategy == null) throw new IllegalArgumentException("제공하지 않는 모드입니다.");

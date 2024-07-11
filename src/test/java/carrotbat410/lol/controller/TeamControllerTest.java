@@ -137,7 +137,7 @@ class TeamControllerTest {
 
         TeamAssignRequestDTO requestDTO = new TeamAssignRequestDTO(RANDOM, team1List, team2List, noTeamList);
         TeamAssignResponseDTO responseDTO = new TeamAssignResponseDTO(team1List, team2List, "GOLD I", "GOLD I");
-        when(teamService.makeResult(any())).thenReturn(responseDTO);
+        when(teamService.executeAssignTeams(any())).thenReturn(responseDTO);
 
         // when // then
         mockMvc.perform(post("/team")
