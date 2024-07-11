@@ -23,16 +23,25 @@ public class TeamController {
 
     @PostMapping("/team")
     public SuccessResult<TeamAssignResponseDTO> makeTeamResult(@RequestBody @Validated TeamAssignRequestDTO requestDTO) {
-        if (requestDTO.getTeam1List().size() + requestDTO.getTeam2List().size() + requestDTO.getNoTeamList().size() != 10) {
-            throw new IllegalArgumentException("필요 인원은 10명 입니다.");
-        }
-        if (requestDTO.getTeam1List().size() > 5 || requestDTO.getTeam2List().size() > 5) throw new IllegalArgumentException("각 팀 최대 인원은 5명입니다.");
+
+        validateRequest(requestDTO);
 
         if (requestDTO.getAssingMode() == null) requestDTO.setAssingMode(RANDOM);
 
         TeamAssignResponseDTO result = teamService.makeResult(requestDTO);
 
         return new SuccessResult<>("ok", result);
+    }
+
+    private void validateRequest(TeamAssignRequestDTO requestDTO) {
+        //TODO requestDTO.getAssingMode() == null이면 에러 나도록 수정하기
+        int totalSummonerSize = requestDTO.getTeam1List().size() + requestDTO.getTeam2List().size() + requestDTO.getNoTeamList().size();
+        if (totalSummonerSize != 10) {
+            throw new IllegalArgumentException("필요 인원은 10명 입니다.");
+        }
+        if (requestDTO.getTeam1List().size() > 5 || requestDTO.getTeam2List().size() > 5) {
+            throw new IllegalArgumentException("각 팀 최대 인원은 5명입니다.");
+        }
     }
 
 }
