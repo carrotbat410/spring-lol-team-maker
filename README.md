@@ -33,7 +33,8 @@
 
 
 ## 🏗️ 서비스 아키텍처
-![아키텍처](https://github.com/carrotbat410/spring-lol-team-maker/assets/163713062/67b60068-dda6-428a-a8c5-7645bbae405f)
+![아키텍처](https://github.com/user-attachments/assets/8a363ff0-79ed-4b8e-930f-f358895f6f63)
+
 
 ## 🔖 ERD
 
