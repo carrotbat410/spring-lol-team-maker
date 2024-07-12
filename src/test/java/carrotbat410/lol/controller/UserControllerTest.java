@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -194,8 +194,7 @@ class UserControllerTest {
         //! mockedStatic.close(); //! 자원에 대한 close() 를 호출하거나 try-with-resources 사용하여 MockedStatic리소스를 자동으로 닫아주어야 한다.
         //! close 하지 않으면 해당 Thread는 활성 Thread로 남기 때문에 다른 테스트에 영향을 줄 수 있다.
         try(MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class)) {
-            given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test1");
-
+            when(SecurityUtils.getCurrentUsernameFromAuthentication()).thenReturn("test1");
 
             // when // then
             mockMvc.perform(MockMvcRequestBuilders.delete("/user")
@@ -215,8 +214,8 @@ class UserControllerTest {
     void deleteUserSuccess() throws Exception {
         // given
         try (MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class)){
-            given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test123");
-            given(SecurityUtils.getCurrentUserIdFromAuthentication()).willReturn(1L);
+            when(SecurityUtils.getCurrentUsernameFromAuthentication()).thenReturn("test123");
+            when(SecurityUtils.getCurrentUserIdFromAuthentication()).thenReturn(1L);
 
             // when // then
             mockMvc.perform(MockMvcRequestBuilders.delete("/user")
