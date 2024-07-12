@@ -191,21 +191,22 @@ class UserControllerTest {
         // when(SecurityUtils.getCurrentUsernameFromAuthentication()).thenReturn("test1");
 
         //* mockito-inline 사용한 mocking
-        MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class);
-        given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test1");
-
-
-        // when // then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value("test 계정은 회원 탈퇴할 수 없습니다."));
-
-        mockedStatic.close(); //! 자원에 대한 close() 를 호출해줘야 한다.
+        //! mockedStatic.close(); //! 자원에 대한 close() 를 호출하거나 try-with-resources 사용하여 MockedStatic리소스를 자동으로 닫아주어야 한다.
         //! close 하지 않으면 해당 Thread는 활성 Thread로 남기 때문에 다른 테스트에 영향을 줄 수 있다.
+        try(MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class)) {
+            given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test1");
+
+
+            // when // then
+            mockMvc.perform(MockMvcRequestBuilders.delete("/user")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(csrf())
+                    )
+                    .andDo(MockMvcResultHandlers.print())
+                    .andExpect(status().isForbidden())
+                    .andExpect(jsonPath("$.message").value("test 계정은 회원 탈퇴할 수 없습니다."));
+        }
+
     }
 
     @Test
@@ -213,21 +214,20 @@ class UserControllerTest {
     @WithMockUser
     void deleteUserSuccess() throws Exception {
         // given
+        try (MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class)){
+            given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test123");
+            given(SecurityUtils.getCurrentUserIdFromAuthentication()).willReturn(1L);
 
-        MockedStatic<SecurityUtils> mockedStatic = mockStatic(SecurityUtils.class);
-        given(SecurityUtils.getCurrentUsernameFromAuthentication()).willReturn("test123");
-        given(SecurityUtils.getCurrentUserIdFromAuthentication()).willReturn(1L);
+            // when // then
+            mockMvc.perform(MockMvcRequestBuilders.delete("/user")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .with(csrf())
+                    )
+                    .andDo(MockMvcResultHandlers.print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message").value("ok"));
+        }
 
-        // when // then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("ok"));
-
-        mockedStatic.close();
     }
 
 }
