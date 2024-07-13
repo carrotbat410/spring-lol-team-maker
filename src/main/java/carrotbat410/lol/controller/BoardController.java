@@ -6,6 +6,7 @@ import carrotbat410.lol.dto.result.SuccessResult;
 import carrotbat410.lol.service.BoardService;
 import carrotbat410.lol.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,15 +17,16 @@ import java.util.List;
 
 @RestController
 public class BoardController {
+
+    @Value("${spring.redis.host}")
+    private String redisHost;
+
     @Autowired
     private BoardService boardService;
 
     @GetMapping("/my/boards")
-    public SuccessResult<Page<BoardDTO>> getMyBoards(Pageable pageable) {
-        Long userId = SecurityUtils.getCurrentUserIdFromAuthentication();
-
-        Page<BoardDTO> boardsPage = boardService.getMyBoards(userId, pageable);
-        return new SuccessResult<>("ok", boardsPage, boardsPage.getTotalElements());//TODO getTotalElements count query 최적화하기
+    public String getMyBoards(Pageable pageable) {
+        return "redisHost is " + redisHost;
     }
 
     @GetMapping("/boards")
