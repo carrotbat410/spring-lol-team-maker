@@ -73,7 +73,7 @@ public class RiotUtils {
         }
 
         Integer numberRank = RankStringToNumber(leagueApiInfo.getRank());
-        Integer mmr = CalculatMmr(leagueApiInfo.getTier(), numberRank);
+        Integer mmr = CalculateMmr(leagueApiInfo.getTier(), numberRank);
 
         return SummonerApiTotalDTO.from(accountApiInfo, summonerApiInfo, leagueApiInfo, mmr, numberRank);
     }
@@ -158,7 +158,7 @@ public class RiotUtils {
         return "NEW TIER";
     }
 
-    private Integer CalculatMmr(String tier, Integer rank) {
+    private Integer CalculateMmr(String tier, Integer rank) {
         if(tier.equals("UNRANKED")) return 0;
         if(tier.equals("MASTER")) return 29;
         if(tier.equals("GRANDMASTER")) return 30;
