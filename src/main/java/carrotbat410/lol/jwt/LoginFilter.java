@@ -107,7 +107,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         if(causeMessage.equals("contentType")) {
             statusCode = 400;
         } else {
-            failedMessage = "로그인 정보를 확인해주세요.";
+            failedMessage = "Unauthorized";
         }
         
         //응답값
