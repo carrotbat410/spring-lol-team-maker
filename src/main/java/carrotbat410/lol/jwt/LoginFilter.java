@@ -45,10 +45,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // String username = obtainUsername(request);
         // String password = obtainPassword(request);
 
-        log.info("request.getContentType(): "+request.getContentType());
         if(request.getContentType() == null || !request.getContentType().equals("application/json")) {
-            log.info("json 요청 아니야");
-            throw new AuthenticationServiceException("Authentication Content-Type not supported: " + request.getContentType());
+            throw new AuthenticationServiceException("Not Supported Content-Type", new Throwable("contentType"));
         }
 
         String messageBody = null;
@@ -79,7 +77,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
@@ -101,6 +98,28 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 실패시 실행하는 메소드
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+
+        String causeMessage = (failed.getCause() != null) ? failed.getCause().getMessage() : "Unauthorized";
+
+        String failedMessage = failed.getMessage();
+        int statusCode = 401; // 기본적으로 401 Unauthorized
+
+        if(causeMessage.equals("contentType")) {
+            statusCode = 400;
+        } else {
+            failedMessage = "로그인 정보를 확인해주세요.";
+        }
+        
+        //응답값
+        try {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(statusCode);
+            response.getWriter().write("{\n" +
+                    "    \"message\": \"" + failedMessage + "\"\n" +
+                    "}");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
