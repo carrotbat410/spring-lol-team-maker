@@ -20,11 +20,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -213,6 +215,24 @@ public class SummonerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("ok"))
                 .andExpect(jsonPath("$.data.id").value(summonerId));
+    }
+
+    @Test
+    @DisplayName("소환사를 삭제할 떄 경로변수의 타입이 Number가 아니면 예외가 발생한다.")
+    void deleteSummonerWithWrongTypePathVariable() throws Exception {
+        // given
+        String summonerId = "123A";
+
+        // when  // then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/summoner/{summonerId}", summonerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(MethodArgumentTypeMismatchException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.code").value("typeMismatch"))
+                .andExpect(jsonPath("$.message").value("매개변수의 타입을 확인해주세요."));
     }
 
     @Test

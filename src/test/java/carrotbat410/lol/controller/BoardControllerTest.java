@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
@@ -120,6 +122,27 @@ class BoardControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("게시글의 제목을 입력해주세요."))
                 .andExpect(jsonPath("$.fieldName").value("title"));
+    }
+
+    @Test
+    @DisplayName("Body값 없이 API를 요청하면 예외를 던진다.")
+    void writeBoardWithoutBody() throws Exception {
+        // given
+        WriteBoardRequestDTO request = null;
+
+        // stubbing
+        doNothing().when(boardService).writeBoard(any(), any());
+
+        // when // then
+        mockMvc.perform(post("/board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertInstanceOf(HttpMessageNotReadableException.class, result.getResolvedException()))
+                .andExpect(jsonPath("$.message").value("body값을 입력해주세요."))
+                .andExpect(jsonPath("$.code").value("BAD"));
     }
 
     @Test

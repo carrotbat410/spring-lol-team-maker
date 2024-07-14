@@ -130,6 +130,32 @@ class BoardServiceTest {
 //                .isInstanceOf(AccessDeniedException.class)
 //                .hasMessage("존재하지 않는 유저입니다. 재 로그인후 다시 요청해주세요.");
 //    }
+
+    @Test
+    @DisplayName("Body값 없이 데이터 요청시 예외가 발생한다.")
+    void writeBoardWithNoBody() throws Exception {
+        // given
+        User user = new User(null, "test123", "testPassword", "ROLE_USER");
+        userRepository.save(user);
+
+        String title = "title1";
+        String content = "content1";
+        BoardCategory boardCategory = FREE;
+        WriteBoardRequestDTO request = new WriteBoardRequestDTO(title, content, boardCategory);
+
+        // when
+        boardService.writeBoard(user.getId(), request);
+
+        // then
+        List<Board> savedBoards = boardRepository.findAll();
+
+        assertThat(savedBoards).hasSize(1)
+                .extracting("title", "content", "boardCategory")
+                .contains(
+                        Tuple.tuple(title, content, boardCategory)
+                );
+    }
+
     @Test
     @DisplayName("게시글을 작성할 수 있다.")
     void writeBoard() throws Exception {

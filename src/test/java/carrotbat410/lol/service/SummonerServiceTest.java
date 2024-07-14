@@ -4,6 +4,7 @@ import carrotbat410.lol.dto.riot.SummonerApiTotalDTO;
 import carrotbat410.lol.dto.summoner.SummonerDTO;
 import carrotbat410.lol.entity.Summoner;
 import carrotbat410.lol.exhandler.exception.DataConflictException;
+import carrotbat410.lol.exhandler.exception.NotFoundException;
 import carrotbat410.lol.repository.SummonerRepository;
 import carrotbat410.lol.utils.RiotUtils;
 import org.assertj.core.api.Assertions;
@@ -15,8 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.groups.Tuple.*;
@@ -220,6 +219,18 @@ class SummonerServiceTest {
                 .contains(
                         tuple(summonerName, tagLine)
                 );
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 소환사정보를 갱신하는 경우 예외가 발생한다.")
+    void updateNoExistingSummoner() throws Exception {
+        // given
+        Long noExistingSummonerId = 1L;
+
+        // when // then
+        Assertions.assertThatThrownBy(() -> summonerService.updateSummoner(noExistingSummonerId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 유저는 존재하지 않습니다.");
     }
 
     @Test
