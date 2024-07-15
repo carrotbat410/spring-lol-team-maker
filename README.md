@@ -97,7 +97,7 @@ Loop Count(각 Thread가 몇번씩 실행을 할 것인지): 2
 </details>
 
 <details>
-<summary>EC2 빌드 멈춤 현상</summary>
+<summary>빌드시 EC2 먹통 현상</summary>
 
 `문제사항`
 - AWS EC2 프리티어 인스턴스를 사용하여 Spring 애플리케이션 코드를 빌드하는 과정중, 인스턴스가 먹통이 되는 현상이 발생하였습니다.
