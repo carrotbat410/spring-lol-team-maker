@@ -81,3 +81,30 @@ Loop Count(각 Thread가 몇번씩 실행을 할 것인지): 2
 </details>
 
 
+<details>
+<summary>필터에서의 예외 처리 문제</summary>
+
+`문제사항`
+- 예외 처리를 위해 사용한 @ControllerAdvice가 필터에서 발생하는 예외를 처리하지 못하는 문제가 발생하였습니다.
+
+`원인 분석`
+- @ControllerAdvice는 Spring MVC의 DispatcherServlet이 관리하는 컨트롤러에서 발생하는 예외를 처리하지만, 
+</br>
+필터는 DispatcherServlet이 실행되기 전에 작동하므로 필터에서 발생하는 예외는 DispatcherServlet까지 도달하지 않아 @ControllerAdvice에서 처리할 수 없음.
+
+`해결방법`
+- 필터에서 발생하는 예외를 HttpServletResponse를 사용하여 직접 처리하는 로직을 구현.
+</details>
+
+<details>
+<summary>EC2 빌드 멈춤 현상</summary>
+
+`문제사항`
+- AWS EC2 프리티어 인스턴스를 사용하여 Spring 애플리케이션 코드를 빌드하는 과정중, 인스턴스가 먹통이 되는 현상이 발생하였습니다.
+
+`원인 분석`
+- 메모리 부족으로 인해, 빌드와 같은 메모리 집약적인 작업 시 인스턴스가 멈추는 것을 확인.
+
+`해결방법`
+- 스왑 메모리를 설정하여 물리 메모리가 부족할 때 스왑 공간을 사용하도록 설정하였습니다.
+</details>
