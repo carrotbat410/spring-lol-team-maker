@@ -85,12 +85,11 @@ Loop Count(각 Thread가 몇번씩 실행을 할 것인지): 2
 <summary>필터에서의 예외 처리 문제</summary>
 
 `문제사항`
-- 예외 처리를 위해 사용한 @ControllerAdvice가 필터에서 발생하는 예외를 처리하지 못하는 문제가 발생하였습니다.
+- 예외 처리를 위해 사용한 @RestControllerAdvice가 필터에서 발생하는 예외를 처리하지 못하는 문제가 발생하였습니다.
 
 `원인 분석`
-- @ControllerAdvice는 Spring MVC의 DispatcherServlet이 관리하는 컨트롤러에서 발생하는 예외를 처리하지만, 
-</br>
-필터는 DispatcherServlet이 실행되기 전에 작동하므로 필터에서 발생하는 예외는 DispatcherServlet까지 도달하지 않아 @ControllerAdvice에서 처리할 수 없음.
+- @RestControllerAdvice는 Spring MVC의 DispatcherServlet이 관리하는 컨트롤러에서 발생하는 예외를 처리하지만, 
+필터는 DispatcherServlet이 실행되기 전에 작동하므로 필터에서 발생하는 예외는 DispatcherServlet까지 도달하지 않아 @RestControllerAdvice에서 처리할 수 없음.
 
 `해결방법`
 - 필터에서 발생하는 예외를 HttpServletResponse를 사용하여 직접 처리하는 로직을 구현.
