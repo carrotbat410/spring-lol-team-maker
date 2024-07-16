@@ -17,8 +17,6 @@
 //    @GetMapping("/main/{id}")
 //    public String mainP(@PathVariable("id") String id) {
 //
-//        System.out.println("id = " + id);
-//
 //        if(id.equals("ex")) {
 //            throw new RuntimeException("런타임 에러뜸");
 //        }
@@ -49,7 +47,6 @@
 //        //* data qqq로 보내면 TypeMisMatchException뜸
 //        //원래는 500에러 전파하는데,
 //        //스프링 부트에 기본으로 등록되어있는 defaulthandlerexceptionresolver가 자동으로 400에러로 잡아줌.
-//        System.out.println("data = " + data);
 //        return "ok";
 //    }
 //}
